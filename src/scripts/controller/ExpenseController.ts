@@ -72,6 +72,35 @@ export class ExpenseController {
         this.#expenses.push(expense);
     }
 
+    // Settle an expense for a particular participant.
+    settle(expenseId: string, participantId: string) {
+        // Find the expense from its ID.
+        const expense = this.#expenses.find((exp) => exp.id === expenseId);
+        if (!expense) {
+            throw new Error('Expense with specified ID not found.');
+        }
+
+        // Find the participant from "notSettled" array.
+        const participantIndex = expense.notSettled.findIndex(
+            (p) => p.id === participantId
+        );
+        if (participantIndex === -1) {
+            throw new Error(
+                'Participant with specified ID not found in this expense.'
+            );
+        }
+
+        const participant = expense.notSettled[participantIndex];
+        const amountPaid = expense.amount / expense.notSettled.length;
+
+        // Update the expense and balance of participants.
+        expense.notSettled.splice(participantIndex, 1);
+        expense.settled.push(participant);
+        expense.amount -= amountPaid;
+        expense.paidBy.balance -= amountPaid;
+        participant.balance += amountPaid;
+    }
+
     getAllParticipants() {
         return this.#participants;
     }
