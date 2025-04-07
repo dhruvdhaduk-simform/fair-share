@@ -1,6 +1,7 @@
 import type { Participant, Expense } from '../model/interfaces.ts';
 import { ExpensesView } from '../view/ExpensesView.ts';
 import { StorageService } from '../utils/localStorageService.ts';
+import { FormService } from '../utils/formService.ts';
 
 export class ExpenseController {
     #participants: Array<Participant>;
@@ -32,6 +33,7 @@ export class ExpenseController {
         this.handleAddParticipant();
 
         this.attachSettlePaymentHandlers();
+        this.attachValidationHandlers();
     }
 
     // Return a participant by name. Or create new one if doesn't exist.
@@ -287,5 +289,61 @@ export class ExpenseController {
                     this.settle(expenseId, participantId);
                 });
             });
+    }
+
+    attachValidationHandlers() {
+        const titleInput = this.#addExpenseForm.querySelector(
+            '#title'
+        ) as HTMLInputElement;
+
+        titleInput.addEventListener('input', () => {
+            const title = titleInput.value;
+            const errorMessage = FormService.validateTitle(title);
+            if (errorMessage) {
+                FormService.showError('title', errorMessage);
+            } else {
+                FormService.clearError('title');
+            }
+        });
+
+        const descriptionInput = this.#addExpenseForm.querySelector(
+            '#description'
+        ) as HTMLInputElement;
+
+        descriptionInput.addEventListener('input', () => {
+            const description = descriptionInput.value;
+            const errorMessage = FormService.validateDescription(description);
+            if (errorMessage) {
+                FormService.showError('description', errorMessage);
+            } else {
+                FormService.clearError('description');
+            }
+        });
+
+        const amountInput = this.#addExpenseForm.querySelector(
+            '#amount'
+        ) as HTMLInputElement;
+        amountInput.addEventListener('input', () => {
+            const amount = Number(amountInput.value);
+            const errorMessage = FormService.validateAmount(amount);
+            if (errorMessage) {
+                FormService.showError('amount', errorMessage);
+            } else {
+                FormService.clearError('amount');
+            }
+        });
+
+        const participantInput = this.#addExpenseForm.querySelector(
+            '#participant'
+        ) as HTMLInputElement;
+        participantInput.addEventListener('input', () => {
+            const participant = participantInput.value;
+            const errorMessage = FormService.validateParticipant(participant);
+            if (errorMessage) {
+                FormService.showError('participant', errorMessage);
+            } else {
+                FormService.clearError('participant');
+            }
+        });
     }
 }
