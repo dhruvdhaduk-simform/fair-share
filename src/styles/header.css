@@ -6,6 +6,16 @@
     padding: 1.5rem 0;
 }
 
+#header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+#fair-share-logo {
+    height: 2.7rem;
+}
+
 h1 {
     color: var(--primary-color);
     margin: 0;
@@ -35,4 +45,10 @@ h1 {
 
 #theme-toggle-btn:hover {
     background: var(--secondary-color);
+}
+
+@media (max-width: 470px) {
+    h1 {
+        display: none;
+    }
 }
