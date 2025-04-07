@@ -104,6 +104,7 @@
                         placeholder="Enter Title"
                         required
                     />
+                    <span id="titleError" class="error-message"></span>
                 </div>
 
                 <!-- Description input -->
@@ -116,6 +117,7 @@
                         placeholder="Enter Description"
                         required
                     />
+                    <span id="descriptionError" class="error-message"></span>
                 </div>
 
                 <!-- Amount input -->
@@ -128,6 +130,7 @@
                         placeholder="Enter Amount"
                         required
                     />
+                    <span id="amountError" class="error-message"></span>
                 </div>
 
                 <!-- Participant input -->
@@ -139,60 +142,22 @@
                             name="participant"
                             type="text"
                             placeholder="Enter participant"
-                            required
                         />
                         <button type="button">Add</button>
                     </div>
+                    <span id="participantError" class="error-message"></span>
 
                     <!-- List of added participants -->
-                    <div class="participants">
-                        <span
-                            >Kaushal
-                            <img
-                                src="/src/assets/icons/close.svg"
-                                alt="remove participant"
-                                class="remove-participant"
-                                role="button"
-                            />
-                        </span>
-                        <span
-                            >Sakshi
-                            <img
-                                src="/src/assets/icons/close.svg"
-                                alt="remove participant"
-                                class="remove-participant"
-                                role="button"
-                            />
-                        </span>
-                        <span
-                            >Krushna
-                            <img
-                                src="/src/assets/icons/close.svg"
-                                alt="remove participant"
-                                class="remove-participant"
-                                role="button"
-                            />
-                        </span>
-                        <span
-                            >Dhruv
-                            <img
-                                src="/src/assets/icons/close.svg"
-                                alt="remove participant"
-                                class="remove-participant"
-                                role="button"
-                            />
-                        </span>
-                    </div>
+                    <div class="participants"></div>
                 </div>
 
                 <!-- Select which participant paid -->
                 <div class="form-item">
                     <label for="paid-by">Paid By</label>
-                    <select name="paid-by" id="paid-by">
-                        <option value="user1">Kaushal</option>
-                        <option value="user2">Sakshi</option>
-                        <option value="user3">Krushna</option>
-                        <option value="user4">Dhruv</option>
+                    <select name="paid-by" id="paid-by" required>
+                        <option value="" disabled selected>
+                            select participant
+                        </option>
                     </select>
                 </div>
 
