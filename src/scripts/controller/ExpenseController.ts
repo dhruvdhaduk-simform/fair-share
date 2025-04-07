@@ -1,5 +1,6 @@
 import type { Participant, Expense } from '../model/interfaces.ts';
 import { ExpensesView } from '../view/ExpensesView.ts';
+import { StorageService } from '../utils/localStorageService.ts';
 
 export class ExpenseController {
     #participants: Array<Participant>;
@@ -8,8 +9,8 @@ export class ExpenseController {
     #view: ExpensesView;
 
     constructor() {
-        this.#participants = [];
-        this.#expenses = [];
+        this.#participants = StorageService.getParticipants();
+        this.#expenses = StorageService.getExpenses();
 
         this.#view = new ExpensesView();
 
@@ -21,6 +22,8 @@ export class ExpenseController {
             e.preventDefault();
             this.handleAddExpenseFormSubmit();
         });
+
+        this.#view.renderExpenses(this.#expenses);
 
         this.attachThemeChangeHandler();
         this.handleAddParticipant();
@@ -109,6 +112,8 @@ export class ExpenseController {
 
         this.#expenses.push(expense);
 
+        StorageService.saveParticipants(this.#participants);
+        StorageService.saveExpenses(this.#expenses);
         this.#view.renderExpenses(this.#expenses);
     }
 
