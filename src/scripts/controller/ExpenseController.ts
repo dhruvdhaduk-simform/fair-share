@@ -13,6 +13,10 @@ export class ExpenseController {
     getParticipant(name: string): Participant {
         name = name.trim();
 
+        if (!name) {
+            throw new Error('Participant name cannot be empty.');
+        }
+
         const participantIndex = this.#participants.findIndex(
             (p) => p.name === name
         );
@@ -40,6 +44,23 @@ export class ExpenseController {
         participantNames: Array<string>,
         paidByPersonName: string
     ) {
+        title = title.trim();
+        description = description.trim();
+        participantNames = participantNames.map((p) => p.trim());
+        paidByPersonName = paidByPersonName.trim();
+
+        if (!title) {
+            throw new Error('Expense title cannot be empty.');
+        }
+
+        if (!description) {
+            throw new Error('Expense description cannot be empty.');
+        }
+
+        if (!paidByPersonName) {
+            throw new Error('Name of the paidby person cannot be empty.');
+        }
+
         if (!participantNames.includes(paidByPersonName)) {
             throw new Error('Person who paid is not included in participants.');
         }
