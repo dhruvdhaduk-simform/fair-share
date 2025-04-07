@@ -54,9 +54,21 @@
     </head>
     <body class="dark-mode">
         <header class="header">
-            <h1 class="">FairShare</h1>
+            <div id="header-title">
+                <img
+                    src="/src/assets/icons/fair_share.png"
+                    alt="fair share logo"
+                    id="fair-share-logo"
+                />
+                <h1 class="">Fair Share</h1>
+            </div>
             <div class="btn-controller">
-                <button id="theme-toggle-btn">Light Mode</button>
+                <button id="theme-toggle-btn">
+                    <img
+                        src="/src/assets/icons/light-mode.svg"
+                        alt="light mode"
+                    />
+                </button>
                 <button id="expense-btn" popovertarget="form-container">
                     Add Expense
                 </button>
@@ -181,10 +193,42 @@
 
                     <!-- List of added participants -->
                     <div class="participants">
-                        <span>Kaushal</span>
-                        <span>Sakshi</span>
-                        <span>Krushna</span>
-                        <span>Dhruv</span>
+                        <span
+                            >Kaushal
+                            <img
+                                src="/src/assets/icons/close.svg"
+                                alt="remove participant"
+                                class="remove-participant"
+                                role="button"
+                            />
+                        </span>
+                        <span
+                            >Sakshi
+                            <img
+                                src="/src/assets/icons/close.svg"
+                                alt="remove participant"
+                                class="remove-participant"
+                                role="button"
+                            />
+                        </span>
+                        <span
+                            >Krushna
+                            <img
+                                src="/src/assets/icons/close.svg"
+                                alt="remove participant"
+                                class="remove-participant"
+                                role="button"
+                            />
+                        </span>
+                        <span
+                            >Dhruv
+                            <img
+                                src="/src/assets/icons/close.svg"
+                                alt="remove participant"
+                                class="remove-participant"
+                                role="button"
+                            />
+                        </span>
                     </div>
                 </div>
 

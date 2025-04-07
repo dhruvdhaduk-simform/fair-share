@@ -6,6 +6,16 @@
     padding: 1.5rem 0;
 }
 
+#header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+#fair-share-logo {
+    height: 2.7rem;
+}
+
 h1 {
     color: var(--primary-color);
     margin: 0;
@@ -17,7 +27,6 @@ h1 {
     gap: 1.5rem;
 }
 
-#theme-toggle-btn,
 #expense-btn {
     background: var(--primary-color);
     border: none;
@@ -29,10 +38,27 @@ h1 {
     transition: background 0.3s;
 }
 
+#theme-toggle-btn {
+    background: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+#theme-toggle-btn img {
+    height: 1.5rem;
+    transition: ease-in-out;
+}
 #expense-btn:hover {
     background: var(--secondary-color);
 }
 
-#theme-toggle-btn:hover {
-    background: var(--secondary-color);
+#theme-toggle-btn img:hover {
+    height: 1.4rem;
+}
+
+@media (max-width: 395px) {
+    h1 {
+        display: none;
+    }
 }

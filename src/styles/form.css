@@ -72,6 +72,10 @@ select {
     font-weight: 600;
     padding: 0.5rem;
     color: var(--secondary-color);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .participants-input-container {
@@ -107,6 +111,17 @@ select {
 .participants-input-container > button:hover,
 .add-expense-btn:hover {
     background-color: var(--secondary-color);
+}
+
+.dark-mode .remove-participant {
+    filter: invert(100%);
+    height: 1rem;
+    cursor: pointer;
+}
+
+.remove-participant {
+    height: 1rem;
+    cursor: pointer;
 }
 
 body:not(:has(#form-container:popover-open)) main {
