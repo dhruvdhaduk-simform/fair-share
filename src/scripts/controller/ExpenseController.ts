@@ -23,6 +23,7 @@ export class ExpenseController {
         });
 
         this.attachThemeChangeHandler();
+        this.handleAddParticipant();
     }
 
     // Return a participant by name. Or create new one if doesn't exist.
@@ -217,6 +218,41 @@ export class ExpenseController {
                     />
                 `;
             }
+        });
+    }
+
+    handleAddParticipant() {
+        const addParticipantBtn = this.#addExpenseForm.querySelector(
+            '#add-participant'
+        ) as HTMLButtonElement;
+
+        addParticipantBtn.addEventListener('click', () => {
+            const participantInput = this.#addExpenseForm.querySelector(
+                '#participant'
+            ) as HTMLInputElement;
+            const participantName = participantInput.value;
+
+            if (!participantName) return;
+
+            this.#view.renderParticipant(participantName);
+
+            participantInput.value = '';
+
+            // Attach event handlers to Remove button for each participant.
+            Array.from(
+                this.#addExpenseForm.querySelector('.participants')?.children ??
+                    []
+            ).forEach((item) => {
+                const name = item.textContent?.trim() ?? '';
+                item.querySelector('img')?.addEventListener('click', () => {
+                    item.remove();
+                    this.#addExpenseForm
+                        .querySelector(`#paid-by > option[value="${name}"]`)
+                        ?.remove();
+                });
+            });
+
+            participantInput.focus();
         });
     }
 }
