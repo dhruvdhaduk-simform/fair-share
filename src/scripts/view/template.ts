@@ -46,4 +46,23 @@ export const templates = {
 
         `;
     },
+
+    formParticipants: (name: string) => {
+        return `
+            <span>${name}
+                <img
+                    src="${new URL('../../assets/icons/close.svg', import.meta.url)}"
+                    alt="remove participant"
+                    class="remove-participant"
+                    role="button"
+                />
+            </span>
+        `;
+    },
+
+    formPaidByOption: (name: string) => {
+        return `
+            <option value="${name}">${name}</option>
+        `;
+    },
 };
