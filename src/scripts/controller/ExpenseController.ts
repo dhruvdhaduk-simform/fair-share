@@ -23,10 +23,15 @@ export class ExpenseController {
             this.handleAddExpenseFormSubmit();
         });
 
-        this.#view.renderExpenses(this.#expenses);
+        this.#view.renderExpenses(
+            this.#expenses,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
 
         this.attachThemeChangeHandler();
         this.handleAddParticipant();
+
+        this.attachSettlePaymentHandlers();
     }
 
     // Return a participant by name. Or create new one if doesn't exist.
@@ -114,7 +119,10 @@ export class ExpenseController {
 
         StorageService.saveParticipants(this.#participants);
         StorageService.saveExpenses(this.#expenses);
-        this.#view.renderExpenses(this.#expenses);
+        this.#view.renderExpenses(
+            this.#expenses,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
     }
 
     // Settle an expense for a particular participant.
@@ -144,6 +152,18 @@ export class ExpenseController {
         expense.amount -= amountPaid;
         expense.paidBy.balance -= amountPaid;
         participant.balance += amountPaid;
+
+        this.#view.renderExpenses(
+            this.#expenses,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
+
+        this.#view.renderExpenseDetails(
+            expense,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
+
+        StorageService.saveExpenses(this.#expenses);
     }
 
     getAllParticipants() {
@@ -249,5 +269,23 @@ export class ExpenseController {
 
             participantInput.focus();
         });
+    }
+
+    attachSettlePaymentHandlers() {
+        const expenceDetailContainer = document.querySelector(
+            '.expense-detail'
+        ) as HTMLElement;
+
+        expenceDetailContainer
+            .querySelectorAll('.expense-paid-btn')
+            .forEach((paidBtn) => {
+                if (!(paidBtn instanceof HTMLButtonElement)) return;
+                paidBtn.addEventListener('click', () => {
+                    const expenseId = paidBtn.dataset.expenseId;
+                    const participantId = paidBtn.dataset.participantId;
+                    if (!expenseId || !participantId) return;
+                    this.settle(expenseId, participantId);
+                });
+            });
     }
 }

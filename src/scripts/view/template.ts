@@ -37,7 +37,7 @@ export const templates = {
                                 ${participant.name}
                                 <span class="to-pay">to pay $${expense.amount / expense.notSettled.length}</span>
                             </p>
-                            <button class="expense-paid-btn">Paid</button>
+                            <button data-expense-id="${expense.id}" data-participant-id="${participant.id}" class="expense-paid-btn">Paid</button>
                         </li>
                     `
                     )

@@ -26,14 +26,17 @@ export class ExpensesView {
         ) as HTMLElement;
     }
 
-    renderExpenses(expenses: Array<Expense>): void {
+    renderExpenses(
+        expenses: Array<Expense>,
+        attachEventHandlers: () => void
+    ): void {
         if (!this.#recentExpensesContainer) return;
 
         this.#recentExpensesContainer.innerHTML = expenses
             .map(templates.recentExpenseList)
             .join('');
 
-        this.handleViewDetailBtn(expenses);
+        this.handleViewDetailBtn(expenses, attachEventHandlers);
     }
 
     renderParticipant(name: string): void {
@@ -45,7 +48,10 @@ export class ExpensesView {
             templates.formPaidByOption(name);
     }
 
-    handleViewDetailBtn(expenses: Array<Expense>) {
+    handleViewDetailBtn(
+        expenses: Array<Expense>,
+        attachEventHandlers: () => void
+    ) {
         const buttons = document.querySelectorAll('.view-details-button');
 
         buttons.forEach((btn) => {
@@ -58,16 +64,20 @@ export class ExpensesView {
                 );
 
                 if (selectedExpense && this.#expenceDetailContainer) {
-                    this.#expenceDetailContainer.innerHTML =
-                        templates.expenseDetails(selectedExpense);
+                    this.renderExpenseDetails(
+                        selectedExpense,
+                        attachEventHandlers
+                    );
                 }
             });
         });
     }
 
-    renderExpenseDetails(expense: Expense) {
+    renderExpenseDetails(expense: Expense, attachEventHandlers: () => void) {
         this.#expenceDetailContainer.innerHTML =
             templates.expenseDetails(expense);
+
+        attachEventHandlers();
     }
 
     setTheme(toDarkMode: boolean, themeToggleBtn: HTMLButtonElement) {
