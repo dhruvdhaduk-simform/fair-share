@@ -1,5 +1,6 @@
 import type { Expense } from '../model/interfaces';
 import { templates } from './template';
+import { StorageService } from '../utils/localStorageService';
 
 export class ExpensesView {
     #recentExpensesContainer: HTMLElement;
@@ -67,5 +68,28 @@ export class ExpensesView {
     renderExpenseDetails(expense: Expense) {
         this.#expenceDetailContainer.innerHTML =
             templates.expenseDetails(expense);
+    }
+
+    setTheme(toDarkMode: boolean, themeToggleBtn: HTMLButtonElement) {
+        if (toDarkMode) {
+            document.body.classList.add('dark-mode');
+            themeToggleBtn.innerHTML = `
+                    <img
+                        src="${new URL('../../assets/icons/light-mode.svg', import.meta.url)}"
+                        alt="light mode"
+                    />
+                `;
+            StorageService.saveTheme(true);
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggleBtn.innerHTML = `
+                    <img
+                        src="${new URL('../../assets/icons/dark-mode.svg', import.meta.url)}"
+                        alt="dark mode"
+                    />
+                `;
+
+            StorageService.saveTheme(false);
+        }
     }
 }
