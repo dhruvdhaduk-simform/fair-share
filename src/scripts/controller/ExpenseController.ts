@@ -21,6 +21,8 @@ export class ExpenseController {
             e.preventDefault();
             this.handleAddExpenseFormSubmit();
         });
+
+        this.attachThemeChangeHandler();
     }
 
     // Return a participant by name. Or create new one if doesn't exist.
@@ -190,5 +192,31 @@ export class ExpenseController {
         if (popup instanceof HTMLDivElement) {
             popup.hidePopover();
         }
+    }
+
+    attachThemeChangeHandler() {
+        const themeToggleBtn = document.querySelector(
+            '#theme-toggle-btn'
+        ) as HTMLButtonElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.classList.remove('dark-mode');
+                themeToggleBtn.innerHTML = `
+                    <img
+                        src="${new URL('../../assets/icons/dark-mode.svg', import.meta.url)}"
+                        alt="dark mode"
+                    />
+                `;
+            } else {
+                document.body.classList.add('dark-mode');
+                themeToggleBtn.innerHTML = `
+                    <img
+                        src="${new URL('../../assets/icons/light-mode.svg', import.meta.url)}"
+                        alt="light mode"
+                    />
+                `;
+            }
+        });
     }
 }
