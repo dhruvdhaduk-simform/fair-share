@@ -79,61 +79,14 @@
             <p class="main-container-title" role="heading">Recent Expenses</p>
 
             <!-- recent expensees list -->
-            <ul class="recent-expenses">
-                <li>
-                    <p>Dinner at Restaurant</p>
-                    <p>$45 (Krushna paid, split with Dhruv, Sakshi)</p>
-                    <button
-                        class="view-details-button"
-                        popovertarget="expense-detail"
-                    >
-                        View Details
-                    </button>
-                </li>
-                <li>
-                    <p>Dinner at Restaurant</p>
-                    <p>$45 (Krushna paid, split with Dhruv, Sakshi)</p>
-                    <button
-                        class="view-details-button"
-                        popovertarget="expense-detail"
-                    >
-                        View Details
-                    </button>
-                </li>
-            </ul>
+            <ul class="recent-expenses"></ul>
 
             <!-- expense detail popup -->
-            <div class="expense-detail" id="expense-detail" popover="auto">
-                <p class="expense-detail-title">Dinner at Restaurant</p>
-
-                <p class="expense-detail-description">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                    eos debitis qui ducimus saepe possimus cupiditate
-                    accusantium hic facere natus ipsum nesciunt nulla eaque ea
-                    nisi, dolore nihil autem iste?
-                </p>
-
-                <p class="expense-detail-split">
-                    $45 (Krushna paid, split with Dhruv, Sakshi)
-                </p>
-
-                <ul class="expense-detail-participants">
-                    <li>
-                        <p>
-                            Krushna
-                            <span class="to-receive">to receive $30.00</span>
-                        </p>
-                    </li>
-                    <li>
-                        <p>Sakshi <span class="to-pay">to pay $15.00 </span></p>
-                        <button class="expense-paid-btn">Paid</button>
-                    </li>
-                    <li>
-                        <p>Dhruv <span class="to-pay">to pay $15.00</span></p>
-                        <button class="expense-paid-btn">Paid</button>
-                    </li>
-                </ul>
-            </div>
+            <div
+                class="expense-detail"
+                id="expense-detail"
+                popover="auto"
+            ></div>
         </main>
 
         <div id="form-container" class="form-container" popover="auto">
