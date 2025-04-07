@@ -4,6 +4,8 @@ import { templates } from './template';
 export class ExpensesView {
     #recentExpensesContainer: HTMLElement;
     #expenceDetailContainer: HTMLElement;
+    #participants: HTMLElement;
+    #participantPaidByOptions: HTMLElement;
 
     constructor() {
         this.#recentExpensesContainer = document.querySelector(
@@ -12,6 +14,14 @@ export class ExpensesView {
 
         this.#expenceDetailContainer = document.querySelector(
             '.expense-detail'
+        ) as HTMLElement;
+
+        this.#participants = document.querySelector(
+            '.participants'
+        ) as HTMLElement;
+
+        this.#participantPaidByOptions = document.querySelector(
+            '#paid-by'
         ) as HTMLElement;
     }
 
@@ -23,6 +33,15 @@ export class ExpensesView {
             .join('');
 
         this.handleViewDetailBtn(expenses);
+    }
+
+    renderParticipant(name: string): void {
+        if (!this.#participants || !this.#participantPaidByOptions) return;
+
+        this.#participants.innerHTML += templates.formParticipants(name);
+
+        this.#participantPaidByOptions.innerHTML +=
+            templates.formPaidByOption(name);
     }
 
     handleViewDetailBtn(expenses: Array<Expense>) {
@@ -43,5 +62,10 @@ export class ExpensesView {
                 }
             });
         });
+    }
+
+    renderExpenseDetails(expense: Expense) {
+        this.#expenceDetailContainer.innerHTML =
+            templates.expenseDetails(expense);
     }
 }

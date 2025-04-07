@@ -124,6 +124,11 @@ select {
     cursor: pointer;
 }
 
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.95rem;
+}
+
 body:not(:has(#form-container:popover-open)) main {
     transition-duration: 300ms;
 }
