@@ -137,3 +137,7 @@ body:has(#form-container:popover-open) main {
     filter: blur(5px);
     transition-duration: 300ms;
 }
+
+body:has(#form-container:popover-open) main *:not([popover]):not([popover] *) {
+    pointer-events: none;
+}
