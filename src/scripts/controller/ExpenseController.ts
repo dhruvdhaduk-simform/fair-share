@@ -76,22 +76,6 @@ export class ExpenseController {
         participantNames = participantNames.map((p) => p.trim());
         paidByPersonName = paidByPersonName.trim();
 
-        if (!title) {
-            throw new Error('Expense title cannot be empty.');
-        }
-
-        if (!description) {
-            throw new Error('Expense description cannot be empty.');
-        }
-
-        if (!paidByPersonName) {
-            throw new Error('Name of the paidby person cannot be empty.');
-        }
-
-        if (!participantNames.includes(paidByPersonName)) {
-            throw new Error('Person who paid is not included in participants.');
-        }
-
         // Get participants by their names.
         const participants: Array<Participant> = participantNames.map((p) => {
             return this.getParticipant(p);
