@@ -174,6 +174,15 @@ export class ExpenseController {
         const amount = Number(getValue('#amount'));
         const paidByPersonName = getValue('#paid-by');
 
+        const titleError = FormService.validateTitle(title);
+        const descriptionError = FormService.validateDescription(description);
+        const amountError = FormService.validateAmount(amount);
+        const participantError =
+            FormService.validateParticipant(paidByPersonName);
+
+        if (titleError || descriptionError || amountError || participantError)
+            return;
+
         // Parse all the participant names as a string array.
         const participantNames: Array<string> = Array.from(
             this.#addExpenseForm.querySelector('.participants')?.children ?? []
