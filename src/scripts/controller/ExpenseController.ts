@@ -11,11 +11,13 @@ export class ExpenseController {
     #view: ExpensesView;
 
     constructor() {
+        // Retrive stored participants and expenses from localStorage.
         this.#participants = StorageService.getParticipants();
         this.#expenses = StorageService.getExpenses();
 
         this.#view = new ExpensesView();
 
+        // Select Add Expense form and attach submit handler.
         this.#addExpenseForm = document.querySelector(
             SELECTORS.addExpenseForm
         ) as HTMLFormElement;
@@ -25,14 +27,15 @@ export class ExpenseController {
             this.handleAddExpenseFormSubmit();
         });
 
+        // Render expenses fetched from localStorage.
         this.#view.renderExpenses(
             this.#expenses,
             this.attachSettlePaymentHandlers.bind(this)
         );
 
+        // Attach Event handlers.
         this.attachThemeChangeHandler();
         this.handleAddParticipant();
-
         this.attachSettlePaymentHandlers();
         this.attachValidationHandlers();
     }
@@ -105,8 +108,10 @@ export class ExpenseController {
 
         this.#expenses.push(expense);
 
+        // Update localStorage to include new expense and participants.
         StorageService.saveParticipants(this.#participants);
         StorageService.saveExpenses(this.#expenses);
+        // Render expenses with new one added.
         this.#view.renderExpenses(
             this.#expenses,
             this.attachSettlePaymentHandlers.bind(this)
@@ -151,7 +156,9 @@ export class ExpenseController {
             this.attachSettlePaymentHandlers.bind(this)
         );
 
+        // Update localStorage to include new expense and participants.
         StorageService.saveExpenses(this.#expenses);
+        StorageService.saveParticipants(this.#participants);
     }
 
     getAllParticipants() {
@@ -170,17 +177,20 @@ export class ExpenseController {
                 this.#addExpenseForm.querySelector(selector) as HTMLInputElement
             )?.value.trim() || '';
 
+        // Get the values from inputs.
         const title = getValue(SELECTORS.titleInput);
         const description = getValue(SELECTORS.descriptionInput);
         const amount = Number(getValue(SELECTORS.amountInput));
         const paidByPersonName = getValue(SELECTORS.paidByInput);
 
+        // Validate all values from inputs.
         const titleError = FormService.validateTitle(title);
         const descriptionError = FormService.validateDescription(description);
         const amountError = FormService.validateAmount(amount);
         const participantError =
             FormService.validateParticipant(paidByPersonName);
 
+        // Prevent form submission if there is invalid input.
         if (titleError || descriptionError || amountError || participantError)
             return;
 
@@ -224,13 +234,17 @@ export class ExpenseController {
         }
     }
 
+    // Attach event handler to theme toggle button.
     attachThemeChangeHandler() {
+        // Select the theme toggle button.
         const themeToggleBtn = document.querySelector(
             SELECTORS.themeToggleButton
         ) as HTMLButtonElement;
 
+        // Get the previously stored theme from localStorage.
         this.#view.setTheme(StorageService.isDarkMode(), themeToggleBtn);
 
+        // Click handler to toggle theme.
         themeToggleBtn.addEventListener('click', () => {
             if (document.body.classList.contains('dark-mode')) {
                 this.#view.setTheme(false, themeToggleBtn);
@@ -240,6 +254,7 @@ export class ExpenseController {
         });
     }
 
+    // Attach event handler to Add Participant button in Add Expense form.
     handleAddParticipant() {
         const addParticipantBtn = this.#addExpenseForm.querySelector(
             SELECTORS.addParticipantButton
@@ -262,6 +277,8 @@ export class ExpenseController {
                 this.#addExpenseForm.querySelector(SELECTORS.participants)
                     ?.children ?? []
             ).forEach((item) => {
+                // For each participant in participants list.
+
                 const name = item.textContent?.trim() ?? '';
                 item.querySelector('img')?.addEventListener('click', () => {
                     item.remove();
@@ -275,18 +292,22 @@ export class ExpenseController {
         });
     }
 
+    // Utility function to clear all the participants from the form after submission.
     clearParticipants() {
+        // Clear all the participants from the list.
         const participants = this.#addExpenseForm.querySelector(
             SELECTORS.participants
         ) as HTMLElement;
         participants.innerHTML = '';
 
+        // Clear all the participants from Paid By options.
         const participantOptions = this.#addExpenseForm.querySelector(
             SELECTORS.paidByInput
         ) as HTMLElement;
         participantOptions.innerHTML = `<option value="" disabled selected> select participant </option>`;
     }
 
+    // Attach event handler to 'Paid' buttons for settling payments.
     attachSettlePaymentHandlers() {
         const expenceDetailContainer = document.querySelector(
             SELECTORS.expenseDetailContainer
@@ -305,7 +326,9 @@ export class ExpenseController {
             });
     }
 
+    // Attach inline validation handlers to all form inputs.
     attachValidationHandlers() {
+        // Utility function to attach inline validation handler for a specified input field.
         const handleInput = (
             inputSelector: string,
             validator: (value: string) => string,
