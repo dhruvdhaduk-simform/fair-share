@@ -213,7 +213,13 @@ export class ExpenseController {
             } else {
                 console.error(err);
             }
+
+            return;
         }
+
+        // Clear the form
+        this.#addExpenseForm.reset();
+        this.clearParticipants();
 
         // Close the popup after submission.
         const popup = this.#addExpenseForm.closest('div[popover]');
@@ -271,6 +277,18 @@ export class ExpenseController {
 
             participantInput.focus();
         });
+    }
+
+    clearParticipants() {
+        const participants = this.#addExpenseForm.querySelector(
+            '.participants'
+        ) as HTMLElement;
+        participants.innerHTML = '';
+
+        const participantOptions = this.#addExpenseForm.querySelector(
+            '#paid-by'
+        ) as HTMLElement;
+        participantOptions.innerHTML = `<option value="" disabled selected> select participant </option>`;
     }
 
     attachSettlePaymentHandlers() {
