@@ -63,7 +63,7 @@ export class ExpenseController {
         return participant;
     }
 
-    // Add a new expenst.
+    // Add a new expense.
     addNewExpense(
         title: string,
         description: string,
@@ -92,7 +92,7 @@ export class ExpenseController {
             throw new Error('Person who paid is not included in participants.');
         }
 
-        // Get participants from their names.
+        // Get participants by their names.
         const participants: Array<Participant> = participantNames.map((p) => {
             return this.getParticipant(p);
         });
