@@ -15,10 +15,11 @@ export class FormService {
         return '';
     }
 
-    static validateAmount(amount: number): string {
-        if (isNaN(amount) || amount <= 0)
+    static validateAmount(amount: string | number): string {
+        const amountNum = Number(amount);
+        if (isNaN(amountNum) || amountNum <= 0)
             return 'Please provide a valid price greater than 0.';
-        if (amount > 100000) return 'Price must not exceed 1,00,000.';
+        if (amountNum > 100000) return 'Price must not exceed 1,00,000.';
         return '';
     }
 

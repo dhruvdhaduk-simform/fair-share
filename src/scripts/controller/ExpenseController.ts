@@ -304,58 +304,48 @@ export class ExpenseController {
     }
 
     attachValidationHandlers() {
-        const titleInput = this.#addExpenseForm.querySelector(
-            '#title'
-        ) as HTMLInputElement;
+        const handleInput = (
+            inputId: string,
+            validator: (value: string) => string,
+            errorType: string
+        ) => {
+            const inputElement = this.#addExpenseForm.querySelector(
+                `#${inputId}`
+            ) as HTMLInputElement;
+            inputElement.addEventListener('input', (e) => {
+                const value =
+                    e.target instanceof HTMLInputElement ? e.target.value : '';
+                const errorMessage = validator(value);
+                if (errorMessage) {
+                    FormService.showError(errorType, errorMessage);
+                } else {
+                    FormService.clearError(errorType);
+                }
+            });
+        };
 
-        titleInput.addEventListener('input', () => {
-            const title = titleInput.value;
-            const errorMessage = FormService.validateTitle(title);
-            if (errorMessage) {
-                FormService.showError('title', errorMessage);
-            } else {
-                FormService.clearError('title');
-            }
-        });
+        handleInput(
+            'title',
+            FormService.validateTitle.bind(FormService),
+            'title'
+        );
 
-        const descriptionInput = this.#addExpenseForm.querySelector(
-            '#description'
-        ) as HTMLInputElement;
+        handleInput(
+            'description',
+            FormService.validateDescription.bind(FormService),
+            'description'
+        );
 
-        descriptionInput.addEventListener('input', () => {
-            const description = descriptionInput.value;
-            const errorMessage = FormService.validateDescription(description);
-            if (errorMessage) {
-                FormService.showError('description', errorMessage);
-            } else {
-                FormService.clearError('description');
-            }
-        });
+        handleInput(
+            'amount',
+            FormService.validateAmount.bind(FormService),
+            'amount'
+        );
 
-        const amountInput = this.#addExpenseForm.querySelector(
-            '#amount'
-        ) as HTMLInputElement;
-        amountInput.addEventListener('input', () => {
-            const amount = Number(amountInput.value);
-            const errorMessage = FormService.validateAmount(amount);
-            if (errorMessage) {
-                FormService.showError('amount', errorMessage);
-            } else {
-                FormService.clearError('amount');
-            }
-        });
-
-        const participantInput = this.#addExpenseForm.querySelector(
-            '#participant'
-        ) as HTMLInputElement;
-        participantInput.addEventListener('input', () => {
-            const participant = participantInput.value;
-            const errorMessage = FormService.validateParticipant(participant);
-            if (errorMessage) {
-                FormService.showError('participant', errorMessage);
-            } else {
-                FormService.clearError('participant');
-            }
-        });
+        handleInput(
+            'participant',
+            FormService.validateParticipant.bind(FormService),
+            'participant'
+        );
     }
 }
