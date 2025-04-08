@@ -187,12 +187,9 @@ export class ExpenseController {
         const titleError = FormService.validateTitle(title);
         const descriptionError = FormService.validateDescription(description);
         const amountError = FormService.validateAmount(amount);
-        const participantError =
-            FormService.validateParticipant(paidByPersonName);
 
         // Prevent form submission if there is invalid input.
-        if (titleError || descriptionError || amountError || participantError)
-            return;
+        if (titleError || descriptionError || amountError) return;
 
         // Parse all the participant names as a string array.
         const participantNames: Array<string> = Array.from(
@@ -266,7 +263,10 @@ export class ExpenseController {
             ) as HTMLInputElement;
             const participantName = participantInput.value;
 
-            if (!participantName) return;
+            const participantError =
+                FormService.validateParticipant(participantName);
+
+            if (participantError) return;
 
             this.#view.renderParticipant(participantName);
 
