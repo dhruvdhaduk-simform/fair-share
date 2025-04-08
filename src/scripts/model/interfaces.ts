@@ -8,6 +8,7 @@ export interface Expense {
     id: string;
     title: string;
     description: string;
+    originalAmount: number;
     amount: number;
     paidBy: Participant;
     settled: Array<Participant>;

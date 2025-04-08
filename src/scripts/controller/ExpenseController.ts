@@ -111,6 +111,7 @@ export class ExpenseController {
             id: crypto.randomUUID(),
             title,
             description,
+            originalAmount: amount,
             amount: actualAmount,
             paidBy,
             settled: [],
