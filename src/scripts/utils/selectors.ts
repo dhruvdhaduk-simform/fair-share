@@ -1,0 +1,16 @@
+export const SELECTORS = Object.freeze({
+    addExpenseForm: '#add-expense-form',
+    titleInput: '#title',
+    descriptionInput: '#description',
+    amountInput: '#amount',
+    participantInput: '#participant',
+    paidByInput: '#paid-by',
+    paidByOption: (name: string) => `#paid-by > option[value="${name}"]`,
+    participants: '.participants',
+    themeToggleButton: '#theme-toggle-btn',
+    addParticipantButton: '#add-participant',
+    expenseDetailContainer: '.expense-detail',
+    expensePaidButtons: '.expense-paid-btn',
+    recentExpensesContainer: '.recent-expenses',
+    viewDetailsButtons: '.view-details-button',
+});

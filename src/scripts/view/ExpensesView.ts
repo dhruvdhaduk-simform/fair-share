@@ -1,6 +1,7 @@
 import type { Expense } from '../model/interfaces';
 import { templates } from './template';
 import { StorageService } from '../utils/localStorageService';
+import { SELECTORS } from '../utils/selectors';
 
 export class ExpensesView {
     #recentExpensesContainer: HTMLElement;
@@ -10,19 +11,19 @@ export class ExpensesView {
 
     constructor() {
         this.#recentExpensesContainer = document.querySelector(
-            '.recent-expenses'
+            SELECTORS.recentExpensesContainer
         ) as HTMLElement;
 
         this.#expenceDetailContainer = document.querySelector(
-            '.expense-detail'
+            SELECTORS.expenseDetailContainer
         ) as HTMLElement;
 
         this.#participants = document.querySelector(
-            '.participants'
+            SELECTORS.participants
         ) as HTMLElement;
 
         this.#participantPaidByOptions = document.querySelector(
-            '#paid-by'
+            SELECTORS.paidByInput
         ) as HTMLElement;
     }
 
@@ -52,7 +53,7 @@ export class ExpensesView {
         expenses: Array<Expense>,
         attachEventHandlers: () => void
     ) {
-        const buttons = document.querySelectorAll('.view-details-button');
+        const buttons = document.querySelectorAll(SELECTORS.viewDetailsButtons);
 
         buttons.forEach((btn) => {
             btn.addEventListener('click', (event) => {
