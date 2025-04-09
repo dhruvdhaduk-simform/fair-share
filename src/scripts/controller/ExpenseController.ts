@@ -257,10 +257,12 @@ export class ExpenseController {
             SELECTORS.addParticipantButton
         ) as HTMLButtonElement;
 
-        addParticipantBtn.addEventListener('click', () => {
-            const participantInput = this.#addExpenseForm.querySelector(
-                SELECTORS.participantInput
-            ) as HTMLInputElement;
+        const participantInput = this.#addExpenseForm.querySelector(
+            SELECTORS.participantInput
+        ) as HTMLInputElement;
+
+        // Utility function which will actually add a participant.
+        const addParticipant = () => {
             const participantName = participantInput.value;
 
             const participantError =
@@ -289,6 +291,14 @@ export class ExpenseController {
             });
 
             participantInput.focus();
+        };
+
+        addParticipantBtn.addEventListener('click', addParticipant);
+        participantInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addParticipant();
+            }
         });
     }
 
