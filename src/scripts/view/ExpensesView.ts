@@ -1,5 +1,7 @@
 import type { Expense } from '../model/interfaces';
 import { templates } from './template';
+import { StorageService } from '../utils/localStorageService';
+import { SELECTORS } from '../utils/selectors';
 
 export class ExpensesView {
     #recentExpensesContainer: HTMLElement;
@@ -9,30 +11,33 @@ export class ExpensesView {
 
     constructor() {
         this.#recentExpensesContainer = document.querySelector(
-            '.recent-expenses'
+            SELECTORS.recentExpensesContainer
         ) as HTMLElement;
 
         this.#expenceDetailContainer = document.querySelector(
-            '.expense-detail'
+            SELECTORS.expenseDetailContainer
         ) as HTMLElement;
 
         this.#participants = document.querySelector(
-            '.participants'
+            SELECTORS.participants
         ) as HTMLElement;
 
         this.#participantPaidByOptions = document.querySelector(
-            '#paid-by'
+            SELECTORS.paidByInput
         ) as HTMLElement;
     }
 
-    renderExpenses(expenses: Array<Expense>): void {
+    renderExpenses(
+        expenses: Array<Expense>,
+        attachEventHandlers: () => void
+    ): void {
         if (!this.#recentExpensesContainer) return;
 
         this.#recentExpensesContainer.innerHTML = expenses
             .map(templates.recentExpenseList)
             .join('');
 
-        this.handleViewDetailBtn(expenses);
+        this.handleViewDetailBtn(expenses, attachEventHandlers);
     }
 
     renderParticipant(name: string): void {
@@ -44,8 +49,11 @@ export class ExpensesView {
             templates.formPaidByOption(name);
     }
 
-    handleViewDetailBtn(expenses: Array<Expense>) {
-        const buttons = document.querySelectorAll('.view-details-button');
+    handleViewDetailBtn(
+        expenses: Array<Expense>,
+        attachEventHandlers: () => void
+    ) {
+        const buttons = document.querySelectorAll(SELECTORS.viewDetailsButtons);
 
         buttons.forEach((btn) => {
             btn.addEventListener('click', (event) => {
@@ -57,15 +65,37 @@ export class ExpensesView {
                 );
 
                 if (selectedExpense && this.#expenceDetailContainer) {
-                    this.#expenceDetailContainer.innerHTML =
-                        templates.expenseDetails(selectedExpense);
+                    this.renderExpenseDetails(
+                        selectedExpense,
+                        attachEventHandlers
+                    );
                 }
             });
         });
     }
 
-    renderExpenseDetails(expense: Expense) {
+    renderExpenseDetails(expense: Expense, attachEventHandlers: () => void) {
         this.#expenceDetailContainer.innerHTML =
             templates.expenseDetails(expense);
+
+        attachEventHandlers();
+    }
+
+    setTheme(toDarkMode: boolean, themeToggleBtn: HTMLButtonElement) {
+        const themeToggleIcon = themeToggleBtn.querySelector(
+            'img'
+        ) as HTMLImageElement;
+
+        if (toDarkMode) {
+            document.body.classList.add('dark-mode');
+            themeToggleIcon.src = `${new URL('../../assets/icons/light-mode.svg', import.meta.url)}`;
+            themeToggleIcon.alt = 'light mode';
+            StorageService.saveTheme(true);
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggleIcon.src = `${new URL('../../assets/icons/dark-mode.svg', import.meta.url)}`;
+            themeToggleIcon.alt = 'dark mode';
+            StorageService.saveTheme(false);
+        }
     }
 }

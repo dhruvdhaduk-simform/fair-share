@@ -113,6 +113,10 @@ body:has(#expense-detail:popover-open) main {
     transition-duration: 300ms;
 }
 
+body:has(#expense-detail:popover-open) main *:not([popover]):not([popover] *) {
+    pointer-events: none;
+}
+
 @media (max-width: 600px) {
     .recent-expenses li {
         flex-direction: column;

@@ -10,15 +10,19 @@ export class FormService {
 
     static validateDescription(description: string): string {
         if (!description) return 'Please provide a description.';
+        if (!/^[A-Za-z\s]+[A-Za-z0-9\s]*$/.test(description)) {
+            return 'Description contains invalid characters. Only letters, numbers, and spaces allowed, starting with a letter.';
+        }
         if (description.length > 200)
             return 'Description must not exceed 200 characters.';
         return '';
     }
 
-    static validateAmount(amount: number): string {
-        if (isNaN(amount) || amount <= 0)
+    static validateAmount(amount: string | number): string {
+        const amountNum = Number(amount);
+        if (isNaN(amountNum) || amountNum <= 0)
             return 'Please provide a valid price greater than 0.';
-        if (amount > 100000) return 'Price must not exceed 1,00,000.';
+        if (amountNum > 100000) return 'Price must not exceed 1,00,000.';
         return '';
     }
 

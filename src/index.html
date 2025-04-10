@@ -52,7 +52,7 @@
 
         <script src="scripts/index.ts" type="module"></script>
     </head>
-    <body class="dark-mode">
+    <body>
         <header class="header">
             <div id="header-title">
                 <img
@@ -93,7 +93,7 @@
             <p class="form-heading">Add New Expense</p>
 
             <!-- Add New Expense Form -->
-            <form>
+            <form id="add-expense-form">
                 <!-- Title input -->
                 <div class="form-item">
                     <label for="title">Title</label>
@@ -143,7 +143,7 @@
                             type="text"
                             placeholder="Enter participant"
                         />
-                        <button type="button">Add</button>
+                        <button id="add-participant" type="button">Add</button>
                     </div>
                     <span id="participantError" class="error-message"></span>
 
