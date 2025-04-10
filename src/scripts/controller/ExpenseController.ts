@@ -3,6 +3,7 @@ import { ExpensesView } from '../view/ExpensesView.ts';
 import { StorageService } from '../utils/localStorageService.ts';
 import { FormService } from '../utils/formService.ts';
 import { SELECTORS } from '../utils/selectors.ts';
+import { formInputList } from '../utils/formInputList.ts';
 
 export class ExpenseController {
     #participants: Array<Participant>;
@@ -359,28 +360,12 @@ export class ExpenseController {
             });
         };
 
-        handleInput(
-            SELECTORS.titleInput,
-            FormService.validateTitle.bind(FormService),
-            'title'
-        );
-
-        handleInput(
-            SELECTORS.descriptionInput,
-            FormService.validateDescription.bind(FormService),
-            'description'
-        );
-
-        handleInput(
-            SELECTORS.amountInput,
-            FormService.validateAmount.bind(FormService),
-            'amount'
-        );
-
-        handleInput(
-            SELECTORS.participantInput,
-            FormService.validateParticipant.bind(FormService),
-            'participant'
-        );
+        formInputList.forEach((inputItem) => {
+            handleInput(
+                inputItem.inputSelector,
+                inputItem.validator,
+                inputItem.errorType
+            );
+        });
     }
 }
