@@ -33,9 +33,12 @@ export class ExpensesView {
     ): void {
         if (!this.#recentExpensesContainer) return;
 
-        this.#recentExpensesContainer.innerHTML = expenses
-            .map(templates.recentExpenseList)
-            .join('');
+        this.#recentExpensesContainer.textContent = '';
+
+        expenses.forEach((expense) => {
+            const expenseElement = templates.recentExpenseList(expense);
+            this.#recentExpensesContainer.prepend(expenseElement);
+        });
 
         this.handleViewDetailBtn(expenses, attachEventHandlers);
     }
@@ -43,10 +46,11 @@ export class ExpensesView {
     renderParticipant(name: string): void {
         if (!this.#participants || !this.#participantPaidByOptions) return;
 
-        this.#participants.innerHTML += templates.formParticipants(name);
+        const participantElement = templates.formParticipants(name);
+        this.#participants.appendChild(participantElement);
 
-        this.#participantPaidByOptions.innerHTML +=
-            templates.formPaidByOption(name);
+        const paidByOptionElement = templates.formPaidByOption(name);
+        this.#participantPaidByOptions.appendChild(paidByOptionElement);
     }
 
     handleViewDetailBtn(
@@ -75,8 +79,12 @@ export class ExpensesView {
     }
 
     renderExpenseDetails(expense: Expense, attachEventHandlers: () => void) {
-        this.#expenceDetailContainer.innerHTML =
-            templates.expenseDetails(expense);
+        if (!this.#expenceDetailContainer) return;
+
+        this.#expenceDetailContainer.textContent = '';
+
+        const expenseDetailsElement = templates.expenseDetails(expense);
+        this.#expenceDetailContainer.appendChild(expenseDetailsElement);
 
         attachEventHandlers();
     }
