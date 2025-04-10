@@ -65,6 +65,10 @@ select {
     padding-bottom: 1rem;
 }
 
+.participants:empty {
+    padding: 0;
+}
+
 .participants > span {
     border: 1px solid var(--border-color);
     border-radius: 0.25rem;
