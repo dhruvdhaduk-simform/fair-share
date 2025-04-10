@@ -87,12 +87,12 @@ export class ExpenseController {
 
         const paidBy = this.getParticipant(paidByPersonName);
         const notSettled = participants.filter((p) => p.name !== paidBy.name);
-        const actualAmount = amount - amount / participants.length;
+        const calculatedAmount = amount - amount / participants.length;
 
         // Update the balance of participants according to this expense.
-        paidBy.balance += actualAmount;
+        paidBy.balance += calculatedAmount;
         notSettled.forEach((p) => {
-            p.balance -= actualAmount / notSettled.length;
+            p.balance -= calculatedAmount / notSettled.length;
         });
 
         const expense: Expense = {
@@ -100,7 +100,7 @@ export class ExpenseController {
             title,
             description,
             originalAmount: amount,
-            amount: actualAmount,
+            calculatedAmount,
             paidBy,
             settled: [],
             notSettled,
@@ -137,12 +137,12 @@ export class ExpenseController {
         }
 
         const participant = expense.notSettled[participantIndex];
-        const amountPaid = expense.amount / expense.notSettled.length;
+        const amountPaid = expense.calculatedAmount / expense.notSettled.length;
 
         // Update the expense and balance of participants.
         expense.notSettled.splice(participantIndex, 1);
         expense.settled.push(participant);
-        expense.amount -= amountPaid;
+        expense.calculatedAmount -= amountPaid;
         expense.paidBy.balance -= amountPaid;
         participant.balance += amountPaid;
 

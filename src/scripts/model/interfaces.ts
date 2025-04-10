@@ -9,7 +9,7 @@ export interface Expense {
     title: string;
     description: string;
     originalAmount: number;
-    amount: number;
+    calculatedAmount: number;
     paidBy: Participant;
     settled: Array<Participant>;
     notSettled: Array<Participant>;
