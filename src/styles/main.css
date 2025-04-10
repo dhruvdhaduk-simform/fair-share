@@ -104,6 +104,17 @@
     cursor: pointer;
 }
 
+.paid {
+    color: var(--success-color);
+    font-weight: 600;
+    margin-left: 0.6rem;
+}
+
+.payment-settle-message {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
 body:not(#expense-detail:has(:popover-open)) main {
     transition-duration: 300ms;
 }
