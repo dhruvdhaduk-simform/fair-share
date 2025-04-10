@@ -25,6 +25,13 @@
     border-bottom: 1px solid var(--border-color);
 }
 
+.recent-expenses li > p:first-child {
+    width: 10rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .view-details-button {
     background-color: var(--primary-color);
     color: white;
@@ -113,6 +120,22 @@
 .payment-settle-message {
     color: var(--success-color);
     font-weight: 600;
+}
+
+.edit-button {
+    background-color: var(--primary-color);
+    color: white;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+    background-color: var(--secondary-color);
+    cursor: pointer;
 }
 
 body:not(#expense-detail:has(:popover-open)) main {
