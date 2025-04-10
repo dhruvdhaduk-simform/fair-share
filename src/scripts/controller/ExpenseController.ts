@@ -10,6 +10,7 @@ export class ExpenseController {
     #expenses: Array<Expense>;
     #addExpenseForm: HTMLFormElement;
     #view: ExpensesView;
+    #editExpense: Expense | null = null;
 
     constructor() {
         // Retrive stored participants and expenses from localStorage.
@@ -26,6 +27,19 @@ export class ExpenseController {
         this.#addExpenseForm.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleAddExpenseFormSubmit();
+        });
+
+        const addButton = document.querySelector(
+            SELECTORS.addExpensePopupButton
+        ) as HTMLButtonElement;
+
+        addButton.addEventListener('click', () => {
+            if (this.#editExpense) {
+                this.#editExpense = null;
+                this.#addExpenseForm.reset();
+                this.clearParticipants();
+                this.setFormMode(false);
+            }
         });
 
         // Render expenses fetched from localStorage.
@@ -108,6 +122,58 @@ export class ExpenseController {
         };
 
         this.#expenses.push(expense);
+
+        // Update localStorage to include new expense and participants.
+        StorageService.saveParticipants(this.#participants);
+        StorageService.saveExpenses(this.#expenses);
+        // Render expenses with new one added.
+        this.#view.renderExpenses(
+            this.#expenses,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
+    }
+
+    updateExpense(
+        expenseId: string,
+        title: string,
+        description: string,
+        amount: number,
+        participantNames: Array<string>,
+        paidByPersonName: string
+    ) {
+        expenseId = expenseId.trim();
+        const expense = this.#expenses.find((exp) => exp.id === expenseId);
+        if (!expense) {
+            throw new Error('Expense with specified ID not found.');
+        }
+
+        title = title.trim();
+        description = description.trim();
+        participantNames = participantNames.map((p) => p.trim());
+        paidByPersonName = paidByPersonName.trim();
+
+        // Get participants by their names.
+        const participants: Array<Participant> = participantNames.map((p) => {
+            return this.getParticipant(p);
+        });
+
+        const paidBy = this.getParticipant(paidByPersonName);
+        const notSettled = participants.filter((p) => p.name !== paidBy.name);
+        const calculatedAmount = amount - amount / participants.length;
+
+        // Update the balance of participants according to this expense.
+        paidBy.balance += calculatedAmount;
+        notSettled.forEach((p) => {
+            p.balance -= calculatedAmount / notSettled.length;
+        });
+
+        expense.title = title;
+        expense.description = description;
+        expense.originalAmount = amount;
+        expense.calculatedAmount = calculatedAmount;
+        expense.paidBy = paidBy;
+        expense.settled = [];
+        expense.notSettled = notSettled;
 
         // Update localStorage to include new expense and participants.
         StorageService.saveParticipants(this.#participants);
@@ -203,13 +269,24 @@ export class ExpenseController {
             .filter((participant) => typeof participant === 'string');
 
         try {
-            this.addNewExpense(
-                title,
-                description,
-                amount,
-                participantNames,
-                paidByPersonName
-            );
+            if (this.#editExpense == null) {
+                this.addNewExpense(
+                    title,
+                    description,
+                    amount,
+                    participantNames,
+                    paidByPersonName
+                );
+            } else {
+                this.updateExpense(
+                    this.#editExpense.id,
+                    title,
+                    description,
+                    amount,
+                    participantNames,
+                    paidByPersonName
+                );
+            }
         } catch (err: unknown) {
             if (err instanceof Error) {
                 alert(err.message);
@@ -230,6 +307,14 @@ export class ExpenseController {
         if (popup instanceof HTMLDivElement) {
             popup.hidePopover();
         }
+        if (this.#editExpense) {
+            this.#view.renderExpenseDetails(
+                this.#editExpense,
+                this.attachSettlePaymentHandlers.bind(this)
+            );
+        }
+
+        FormService.clearError('participant');
     }
 
     // Attach event handler to theme toggle button.
@@ -252,6 +337,49 @@ export class ExpenseController {
         });
     }
 
+    addParticipant(participantName: string) {
+        const participantInput = this.#addExpenseForm.querySelector(
+            SELECTORS.participantInput
+        ) as HTMLInputElement;
+
+        const participantContainer = this.#addExpenseForm.querySelector(
+            SELECTORS.participants
+        ) as HTMLElement;
+
+        if (participantContainer.childElementCount > 7) {
+            return;
+        }
+
+        const participantError =
+            FormService.validateParticipant(participantName);
+
+        if (participantError) return;
+
+        FormService.clearError('participant');
+
+        this.#view.renderParticipant(participantName);
+
+        participantInput.value = '';
+
+        // Attach event handlers to Remove button for each participant.
+        Array.from(
+            this.#addExpenseForm.querySelector(SELECTORS.participants)
+                ?.children ?? []
+        ).forEach((item) => {
+            // For each participant in participants list.
+
+            const name = item.textContent?.trim() ?? '';
+            item.querySelector('img')?.addEventListener('click', () => {
+                item.remove();
+                this.#addExpenseForm
+                    .querySelector(SELECTORS.paidByOption(name))
+                    ?.remove();
+            });
+        });
+
+        participantInput.focus();
+    }
+
     // Attach event handler to Add Participant button in Add Expense form.
     handleAddParticipant() {
         const addParticipantBtn = this.#addExpenseForm.querySelector(
@@ -262,43 +390,13 @@ export class ExpenseController {
             SELECTORS.participantInput
         ) as HTMLInputElement;
 
-        // Utility function which will actually add a participant.
-        const addParticipant = () => {
-            const participantName = participantInput.value;
-
-            const participantError =
-                FormService.validateParticipant(participantName);
-
-            if (participantError) return;
-
-            this.#view.renderParticipant(participantName);
-
-            participantInput.value = '';
-
-            // Attach event handlers to Remove button for each participant.
-            Array.from(
-                this.#addExpenseForm.querySelector(SELECTORS.participants)
-                    ?.children ?? []
-            ).forEach((item) => {
-                // For each participant in participants list.
-
-                const name = item.textContent?.trim() ?? '';
-                item.querySelector('img')?.addEventListener('click', () => {
-                    item.remove();
-                    this.#addExpenseForm
-                        .querySelector(SELECTORS.paidByOption(name))
-                        ?.remove();
-                });
-            });
-
-            participantInput.focus();
-        };
-
-        addParticipantBtn.addEventListener('click', addParticipant);
+        addParticipantBtn.addEventListener('click', () => {
+            this.addParticipant(participantInput.value);
+        });
         participantInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                addParticipant();
+                this.addParticipant(participantInput.value);
             }
         });
     }
@@ -324,6 +422,10 @@ export class ExpenseController {
             SELECTORS.expenseDetailContainer
         ) as HTMLElement;
 
+        const editButton = expenceDetailContainer.querySelector(
+            SELECTORS.expenseEditButton
+        ) as HTMLButtonElement;
+
         expenceDetailContainer
             .querySelectorAll(SELECTORS.expensePaidButtons)
             .forEach((paidBtn) => {
@@ -335,6 +437,39 @@ export class ExpenseController {
                     this.settle(expenseId, participantId);
                 });
             });
+
+        editButton?.addEventListener('click', () => {
+            const setValue = (selector: string, value: string | number) => {
+                (
+                    this.#addExpenseForm.querySelector(
+                        selector
+                    ) as HTMLInputElement
+                ).value = String(value);
+            };
+
+            const expenseId = editButton.dataset.expenseId?.trim();
+            const expense = this.#expenses.find((exp) => exp.id === expenseId);
+            if (!expense) {
+                throw new Error('Expense with specified ID not found.');
+            }
+
+            this.clearParticipants();
+
+            setValue(SELECTORS.titleInput, expense.title);
+            setValue(SELECTORS.descriptionInput, expense.description);
+            setValue(SELECTORS.amountInput, expense.originalAmount);
+            setValue(SELECTORS.paidByInput, expense.paidBy.name);
+
+            this.addParticipant(expense.paidBy.name);
+
+            expense.notSettled.forEach((participant) => {
+                this.addParticipant(participant.name);
+            });
+
+            this.#editExpense = expense;
+
+            this.setFormMode(true);
+        });
     }
 
     // Attach inline validation handlers to all form inputs.
@@ -343,15 +478,27 @@ export class ExpenseController {
         const handleInput = (
             inputSelector: string,
             validator: (value: string) => string,
-            errorType: string
+            errorType: string,
+            limitValidator?: () => string
         ) => {
             const inputElement = this.#addExpenseForm.querySelector(
                 inputSelector
             ) as HTMLInputElement;
             inputElement.addEventListener('input', (e) => {
+                console.log('CHECK');
                 const value =
                     e.target instanceof HTMLInputElement ? e.target.value : '';
-                const errorMessage = validator(value);
+                let errorMessage: string;
+                errorMessage = validator(value);
+                if (limitValidator) {
+                    const limitError = limitValidator();
+                    console.log(`limit error: ${limitError}`);
+                    if (limitError) {
+                        errorMessage = limitError;
+                        (e.target as HTMLInputElement).value = '';
+                    }
+                }
+                console.log(`error msg: ${errorMessage}`);
                 if (errorMessage) {
                     FormService.showError(errorType, errorMessage);
                 } else {
@@ -361,11 +508,54 @@ export class ExpenseController {
         };
 
         formInputList.forEach((inputItem) => {
-            handleInput(
-                inputItem.inputSelector,
-                inputItem.validator,
-                inputItem.errorType
-            );
+            if (inputItem.errorType == 'participant') {
+                handleInput(
+                    inputItem.inputSelector,
+                    inputItem.validator,
+                    inputItem.errorType,
+                    () => {
+                        const participantContainer =
+                            this.#addExpenseForm.querySelector(
+                                SELECTORS.participants
+                            ) as HTMLElement;
+
+                        if (participantContainer.childElementCount > 7) {
+                            return 'You can add only 8 participants.';
+                        }
+                        return '';
+                    }
+                );
+            } else {
+                handleInput(
+                    inputItem.inputSelector,
+                    inputItem.validator,
+                    inputItem.errorType
+                );
+            }
         });
+    }
+
+    setFormMode(isEditMode: boolean) {
+        if (isEditMode) {
+            (
+                document.querySelector(SELECTORS.formHeading) as HTMLElement
+            ).textContent = 'Update Expense';
+
+            (
+                document.querySelector(
+                    SELECTORS.formSubmitButton
+                ) as HTMLButtonElement
+            ).textContent = 'Update Expense';
+        } else {
+            (
+                document.querySelector(SELECTORS.formHeading) as HTMLElement
+            ).textContent = 'Add New Expense';
+
+            (
+                document.querySelector(
+                    SELECTORS.formSubmitButton
+                ) as HTMLButtonElement
+            ).textContent = 'Add Expense';
+        }
     }
 }
