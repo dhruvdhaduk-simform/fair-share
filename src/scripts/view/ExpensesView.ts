@@ -82,24 +82,19 @@ export class ExpensesView {
     }
 
     setTheme(toDarkMode: boolean, themeToggleBtn: HTMLButtonElement) {
+        const themeToggleIcon = themeToggleBtn.querySelector(
+            'img'
+        ) as HTMLImageElement;
+
         if (toDarkMode) {
             document.body.classList.add('dark-mode');
-            themeToggleBtn.innerHTML = `
-                    <img
-                        src="${new URL('../../assets/icons/light-mode.svg', import.meta.url)}"
-                        alt="light mode"
-                    />
-                `;
+            themeToggleIcon.src = `${new URL('../../assets/icons/light-mode.svg', import.meta.url)}`;
+            themeToggleIcon.alt = 'light mode';
             StorageService.saveTheme(true);
         } else {
             document.body.classList.remove('dark-mode');
-            themeToggleBtn.innerHTML = `
-                    <img
-                        src="${new URL('../../assets/icons/dark-mode.svg', import.meta.url)}"
-                        alt="dark mode"
-                    />
-                `;
-
+            themeToggleIcon.src = `${new URL('../../assets/icons/dark-mode.svg', import.meta.url)}`;
+            themeToggleIcon.alt = 'dark mode';
             StorageService.saveTheme(false);
         }
     }
