@@ -55,6 +55,16 @@ export const templates = {
         const participants = templates.expenseParticipants(expense);
         container.appendChild(participants);
 
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-button');
+        editButton.dataset.expenseId = expense.id;
+        editButton.setAttribute('popovertarget', 'form-container');
+
+        if (expense.settled.length == 0) {
+            container.appendChild(editButton);
+        }
+
         return container;
     },
 
