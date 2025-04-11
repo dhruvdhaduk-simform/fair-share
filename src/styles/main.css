@@ -7,8 +7,7 @@
 }
 
 /* main container title */
-.main-container-title,
-.expense-detail-title {
+.main-container-title {
     font-size: 1.5rem;
     color: var(--primary-color);
     font-weight: 600;
@@ -84,8 +83,18 @@
 }
 
 .expense-detail-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.view-detail-title-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
 }
 
 .expense-detail-participants {
@@ -160,6 +169,27 @@
 .edit-button:hover {
     background-color: var(--secondary-color);
     cursor: pointer;
+}
+
+.view-detail-close-button {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.view-detail-close-button:hover {
+    cursor: pointer;
+    background-color: var(--secondary-color);
+}
+
+.view-detail-close-button img {
+    filter: invert(100%);
+    height: 0.8rem;
 }
 
 body:not(#expense-detail:has(:popover-open)) main {

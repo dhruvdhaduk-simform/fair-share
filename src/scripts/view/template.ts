@@ -56,7 +56,22 @@ export const templates = {
         const title = document.createElement('p');
         title.classList.add('expense-detail-title');
         title.textContent = expense.title;
-        container.appendChild(title);
+
+        const closeIcon = document.createElement('img');
+        closeIcon.src = `${new URL('../../assets/icons/close.svg', import.meta.url)}`;
+        closeIcon.alt = 'close icon';
+
+        const closeButton = document.createElement('button');
+        closeButton.setAttribute('popovertarget', 'expense-detail');
+        closeButton.classList.add('view-detail-close-button');
+        closeButton.appendChild(closeIcon);
+
+        const titleDiv = document.createElement('div');
+        titleDiv.classList.add('view-detail-title-div');
+
+        titleDiv.appendChild(title);
+        titleDiv.appendChild(closeButton);
+        container.appendChild(titleDiv);
 
         const description = document.createElement('p');
         description.classList.add('expense-detail-description');
