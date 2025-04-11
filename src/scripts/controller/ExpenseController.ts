@@ -485,20 +485,17 @@ export class ExpenseController {
                 inputSelector
             ) as HTMLInputElement;
             inputElement.addEventListener('input', (e) => {
-                console.log('CHECK');
                 const value =
                     e.target instanceof HTMLInputElement ? e.target.value : '';
                 let errorMessage: string;
                 errorMessage = validator(value);
                 if (limitValidator) {
                     const limitError = limitValidator();
-                    console.log(`limit error: ${limitError}`);
                     if (limitError) {
                         errorMessage = limitError;
                         (e.target as HTMLInputElement).value = '';
                     }
                 }
-                console.log(`error msg: ${errorMessage}`);
                 if (errorMessage) {
                     FormService.showError(errorType, errorMessage);
                 } else {
