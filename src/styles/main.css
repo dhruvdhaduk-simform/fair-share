@@ -32,6 +32,11 @@
     overflow: hidden;
 }
 
+.button-controller {
+    display: flex;
+    align-items: center;
+}
+
 .view-details-button {
     background-color: var(--primary-color);
     color: white;
@@ -45,6 +50,25 @@
 .view-details-button:hover {
     background-color: var(--secondary-color);
     cursor: pointer;
+}
+
+.expense-delete-button {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.2rem 0.6em;
+    border-radius: 0.25rem;
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+
+.expense-delete-button:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.delete-button-icon {
+    width: 1.6rem;
 }
 
 /* expense details popup */
