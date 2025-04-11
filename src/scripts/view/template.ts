@@ -16,18 +16,38 @@ export const templates = {
             listItem.appendChild(message);
         } else {
             const amount = document.createElement('p');
-            amount.innerHTML = `&#x20b9;${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')})`;
+            amount.innerHTML = templates.expenseSplitDisplay(expense);
             listItem.appendChild(amount);
         }
+
+        const buttonController = document.createElement('div');
+        buttonController.classList.add('button-controller');
+        listItem.appendChild(buttonController);
 
         const viewDetailsButton = document.createElement('button');
         viewDetailsButton.classList.add('view-details-button');
         viewDetailsButton.setAttribute('data-expense-id', expense.id);
         viewDetailsButton.setAttribute('popovertarget', 'expense-detail');
         viewDetailsButton.textContent = 'View Details';
-        listItem.appendChild(viewDetailsButton);
+        buttonController.appendChild(viewDetailsButton);
+
+        const deleteButtonIcon = document.createElement('img');
+        deleteButtonIcon.src = `${new URL('../../assets/icons/delete.svg', import.meta.url)}`;
+        deleteButtonIcon.alt = 'delete icon';
+        deleteButtonIcon.classList.add('delete-button-icon');
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('expense-delete-button');
+        deleteButton.setAttribute('data-expense-id', expense.id);
+        deleteButton.appendChild(deleteButtonIcon);
+
+        buttonController.appendChild(deleteButton);
 
         return listItem;
+    },
+
+    expenseSplitDisplay: (expense: Expense) => {
+        return `&#x20b9;${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
     },
 
     expenseDetails: (expense: Expense): HTMLElement => {
@@ -45,11 +65,7 @@ export const templates = {
 
         const splitAmount = document.createElement('p');
         splitAmount.classList.add('expense-detail-split');
-        if (expense.calculatedAmount === 0) {
-            splitAmount.innerHTML = `&#x20b9;${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.settled.map((participant) => participant.name).join(', ')})`;
-        } else {
-            splitAmount.innerHTML = `&#x20b9;${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')})`;
-        }
+        splitAmount.innerHTML = templates.expenseSplitDisplay(expense);
         container.appendChild(splitAmount);
 
         const participants = templates.expenseParticipants(expense);
