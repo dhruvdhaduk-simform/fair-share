@@ -17,4 +17,5 @@ export const SELECTORS = Object.freeze({
     addExpensePopupButton: '#expense-btn',
     formHeading: '.form-heading',
     formSubmitButton: '.add-expense-btn',
+    deleteExpenseButton: '.view-details-button',
 });
