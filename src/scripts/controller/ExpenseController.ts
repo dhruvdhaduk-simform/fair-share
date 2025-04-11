@@ -53,6 +53,7 @@ export class ExpenseController {
         this.handleAddParticipant();
         this.attachSettlePaymentHandlers();
         this.attachValidationHandlers();
+        this.deleteExpenseHandler();
     }
 
     // Return a participant by name. Or create new one if doesn't exist.
@@ -131,6 +132,8 @@ export class ExpenseController {
             this.#expenses,
             this.attachSettlePaymentHandlers.bind(this)
         );
+
+        this.deleteExpenseHandler();
     }
 
     updateExpense(
@@ -183,6 +186,24 @@ export class ExpenseController {
             this.#expenses,
             this.attachSettlePaymentHandlers.bind(this)
         );
+
+        this.deleteExpenseHandler();
+    }
+
+    deleteExpense(expenseId: string) {
+        expenseId = expenseId.trim();
+
+        console.log(expenseId);
+
+        this.#expenses = this.#expenses.filter((exp) => exp.id !== expenseId);
+        StorageService.saveExpenses(this.#expenses);
+
+        this.#view.renderExpenses(
+            this.#expenses,
+            this.attachSettlePaymentHandlers.bind(this)
+        );
+
+        this.deleteExpenseHandler();
     }
 
     // Settle an expense for a particular participant.
@@ -222,6 +243,8 @@ export class ExpenseController {
             expense,
             this.attachSettlePaymentHandlers.bind(this)
         );
+
+        this.deleteExpenseHandler();
 
         // Update localStorage to include new expense and participants.
         StorageService.saveExpenses(this.#expenses);
@@ -414,6 +437,22 @@ export class ExpenseController {
             SELECTORS.paidByInput
         ) as HTMLElement;
         participantOptions.innerHTML = `<option value="" disabled selected> select participant </option>`;
+    }
+
+    deleteExpenseHandler() {
+        const deleteButton = document.querySelectorAll(
+            '.expense-delete-button'
+        ) as NodeListOf<HTMLButtonElement>;
+
+        deleteButton.forEach((button) => {
+            button.addEventListener('click', () => {
+                const expenseId = button.dataset.expenseId;
+                if (typeof expenseId === 'string') {
+                    console.log('first');
+                    this.deleteExpense(expenseId);
+                }
+            });
+        });
     }
 
     // Attach event handler to 'Paid' buttons for settling payments.
