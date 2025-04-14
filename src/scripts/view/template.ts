@@ -16,7 +16,7 @@ export const templates = {
             listItem.appendChild(message);
         } else {
             const amount = document.createElement('p');
-            amount.innerHTML = templates.expenseSplitDisplay(expense);
+            amount.textContent = templates.expenseSplitDisplay(expense);
             listItem.appendChild(amount);
         }
 
@@ -47,7 +47,7 @@ export const templates = {
     },
 
     expenseSplitDisplay: (expense: Expense) => {
-        return `&#x20b9;${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
+        return `₹${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
     },
 
     expenseDetails: (expense: Expense): HTMLElement => {
@@ -80,7 +80,7 @@ export const templates = {
 
         const splitAmount = document.createElement('p');
         splitAmount.classList.add('expense-detail-split');
-        splitAmount.innerHTML = templates.expenseSplitDisplay(expense);
+        splitAmount.textContent = templates.expenseSplitDisplay(expense);
         container.appendChild(splitAmount);
 
         const participants = templates.expenseParticipants(expense);
@@ -105,14 +105,22 @@ export const templates = {
 
         const paidByItem = document.createElement('li');
         const paidByText = document.createElement('p');
-        paidByText.innerHTML = `${expense.paidBy.name} <span class="to-receive">to receive &#x20b9;${expense.calculatedAmount.toFixed(2)}</span>`;
+        const spanElement = document.createElement('span');
+        spanElement.className = 'to-receive';
+        spanElement.textContent = `to receive ₹${expense.calculatedAmount.toFixed(2)}`;
+        paidByText.textContent = `${expense.paidBy.name} `;
+        paidByText.appendChild(spanElement);
         paidByItem.appendChild(paidByText);
         participantsList.appendChild(paidByItem);
 
         expense.notSettled.forEach((participant) => {
             const participantItem = document.createElement('li');
             const participantText = document.createElement('p');
-            participantText.innerHTML = `${participant.name} <span class="to-pay">to pay &#x20b9;${(expense.calculatedAmount / expense.notSettled.length).toFixed(2)}</span>`;
+            const spanElement = document.createElement('span');
+            spanElement.className = 'to-pay';
+            spanElement.textContent = `to pay ₹${(expense.calculatedAmount / expense.notSettled.length).toFixed(2)}`;
+            participantText.textContent = `${participant.name} `;
+            participantText.appendChild(spanElement);
             participantItem.appendChild(participantText);
 
             const paidButton = document.createElement('button');
@@ -129,7 +137,14 @@ export const templates = {
             const participantItem = document.createElement('li');
             const participantText = document.createElement('p');
             participantText.classList.add('paid-list');
-            participantText.innerHTML = `${participant.name} <span class="paid">paid &#x20b9;${(expense.originalAmount / (expense.notSettled.length + expense.settled.length + 1)).toFixed(2)}</span>`;
+
+            const spanElement = document.createElement('span');
+            spanElement.className = 'paid';
+            spanElement.textContent = `paid ₹${(expense.originalAmount / (expense.notSettled.length + expense.settled.length + 1)).toFixed(2)}`;
+
+            participantText.textContent = `${participant.name} `;
+            participantText.appendChild(spanElement);
+
             participantItem.appendChild(participantText);
             participantsList.appendChild(participantItem);
         });
