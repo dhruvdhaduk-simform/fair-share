@@ -172,19 +172,18 @@
 }
 
 .view-detail-close-button {
-    background-color: var(--primary-color);
+    background-color: var(--danger-color);
     border: none;
     padding: 0.3rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s;
 }
 
 .view-detail-close-button:hover {
     cursor: pointer;
-    background-color: var(--secondary-color);
+    opacity: 0.8;
 }
 
 .view-detail-close-button img {
