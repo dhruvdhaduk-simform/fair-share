@@ -1,6 +1,7 @@
 import { Expense } from '../model/interfaces';
 
 export const templates = {
+    /* This function serves as a template for displaying the list of recent expenses */
     recentExpenseList: (expense: Expense): HTMLElement => {
         const listItem = document.createElement('li');
 
@@ -46,10 +47,12 @@ export const templates = {
         return listItem;
     },
 
+    /* This function serves as a template that provides information about expenses paid by someone and how they are split with participants */
     expenseSplitDisplay: (expense: Expense) => {
         return `₹${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
     },
 
+    /* This function provides expense details for a particular expense, including participants' names and their payment status */
     expenseDetails: (expense: Expense): HTMLElement => {
         const container = document.createElement('div');
 
@@ -99,6 +102,7 @@ export const templates = {
         return container;
     },
 
+    /* This function provides participants with their expense details, including their payment status */
     expenseParticipants: (expense: Expense): HTMLElement => {
         const participantsList = document.createElement('ul');
         participantsList.classList.add('expense-detail-participants');
@@ -152,6 +156,7 @@ export const templates = {
         return participantsList;
     },
 
+    /* This function is used to render the participant's name in the form when a participant is added */
     formParticipants: (name: string): HTMLElement => {
         const participantSpan = document.createElement('span');
         participantSpan.textContent = name;
@@ -169,6 +174,7 @@ export const templates = {
         return participantSpan;
     },
 
+    /* This function renders participants' names inside a select option */
     formPaidByOption: (name: string): HTMLOptionElement => {
         const option = document.createElement('option');
         option.setAttribute('value', name);
