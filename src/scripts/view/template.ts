@@ -47,6 +47,14 @@ export const templates = {
         return listItem;
     },
 
+    initialRecentExpense: (): HTMLElement => {
+        const message = document.createElement('p');
+        message.textContent =
+            'No recent expenses found, please add one to get started.';
+
+        return message;
+    },
+
     /* This function serves as a template that provides information about expenses paid by someone and how they are split with participants */
     expenseSplitDisplay: (expense: Expense) => {
         return `₹${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;

@@ -35,10 +35,16 @@ export class ExpensesView {
 
         this.#recentExpensesContainer.textContent = '';
 
-        expenses.forEach((expense) => {
-            const expenseElement = templates.recentExpenseList(expense);
-            this.#recentExpensesContainer.prepend(expenseElement);
-        });
+        if (!(expenses.length == 0)) {
+            expenses.forEach((expense) => {
+                const expenseElement = templates.recentExpenseList(expense);
+                this.#recentExpensesContainer.prepend(expenseElement);
+            });
+        } else {
+            this.#recentExpensesContainer.prepend(
+                templates.initialRecentExpense()
+            );
+        }
 
         this.handleViewDetailBtn(expenses, attachEventHandlers);
     }
