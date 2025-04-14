@@ -57,7 +57,7 @@ export const templates = {
 
     /* This function serves as a template that provides information about expenses paid by someone and how they are split with participants */
     expenseSplitDisplay: (expense: Expense) => {
-        return `₹${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
+        return `\u20B9${expense.originalAmount} (${expense.paidBy.name} paid, split with ${expense.notSettled.map((participant) => participant.name).join(', ')}, ${expense.settled.map((participant) => participant.name).join(', ')})`;
     },
 
     /* This function provides expense details for a particular expense, including participants' names and their payment status */
