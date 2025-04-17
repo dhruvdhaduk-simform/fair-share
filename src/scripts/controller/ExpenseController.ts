@@ -39,6 +39,7 @@ export class ExpenseController {
                 this.#addExpenseForm.reset();
                 this.clearParticipants();
                 this.setFormMode(false);
+                FormService.clearAllError();
             }
         });
 

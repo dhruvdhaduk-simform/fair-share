@@ -58,4 +58,11 @@ export class FormService {
             errorElement.textContent = '';
         }
     }
+
+    static clearAllError() {
+        this.clearError('title');
+        this.clearError('description');
+        this.clearError('amount');
+        this.clearError('participant');
+    }
 }
