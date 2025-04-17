@@ -64,7 +64,6 @@ export class ExpenseController {
                     ) as HTMLInputElement
                 )?.value.trim();
             formPopup.addEventListener('toggle', () => {
-                console.dir(formPopup);
                 const title = getValue(SELECTORS.titleInput);
                 const description = getValue(SELECTORS.descriptionInput);
                 const amount = Number(getValue(SELECTORS.amountInput));
