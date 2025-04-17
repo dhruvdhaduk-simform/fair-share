@@ -414,13 +414,19 @@ export class ExpenseController {
             SELECTORS.participantInput
         ) as HTMLInputElement;
 
+        const addParticipantButton = this.#addExpenseForm.querySelector(
+            SELECTORS.addParticipantButton
+        ) as HTMLButtonElement;
+
         addParticipantBtn.addEventListener('click', () => {
             this.addParticipant(participantInput.value);
+            addParticipantButton.disabled = true;
         });
         participantInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.addParticipant(participantInput.value);
+                addParticipantBtn.disabled = true;
             }
         });
     }
