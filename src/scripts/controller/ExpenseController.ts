@@ -41,6 +41,12 @@ export class ExpenseController {
                 this.setFormMode(false);
                 FormService.clearAllError();
             }
+
+            (
+                this.#addExpenseForm.querySelector(
+                    SELECTORS.paidByInput
+                ) as HTMLSelectElement
+            ).disabled = false;
         });
 
         // Render expenses fetched from localStorage.
@@ -381,7 +387,7 @@ export class ExpenseController {
         });
     }
 
-    addParticipant(participantName: string) {
+    addParticipant(participantName?: string) {
         const participantInput = this.#addExpenseForm.querySelector(
             SELECTORS.participantInput
         ) as HTMLInputElement;
@@ -394,31 +400,55 @@ export class ExpenseController {
             return;
         }
 
-        const participantError =
-            FormService.validateParticipant(participantName);
+        if (participantName !== undefined) {
+            const participantError =
+                FormService.validateParticipant(participantName);
 
-        if (participantError) return;
+            if (participantError) return;
 
-        FormService.clearError('participant');
+            FormService.clearError('participant');
 
-        this.#view.renderParticipant(participantName);
+            this.#view.renderParticipant(participantName);
 
-        participantInput.value = '';
+            participantInput.value = '';
 
-        // Attach event handlers to Remove button for each participant.
-        Array.from(
-            this.#addExpenseForm.querySelector(SELECTORS.participants)
-                ?.children ?? []
-        ).forEach((item) => {
+            if (participantContainer.childElementCount < 2) {
+                FormService.showError(
+                    'participant',
+                    'add minimum two participants'
+                );
+            }
+        }
+
+        Array.from(participantContainer?.children ?? []).forEach((item) => {
             // For each participant in participants list.
 
             const name = item.textContent?.trim() ?? '';
-            item.querySelector('img')?.addEventListener('click', () => {
-                item.remove();
-                this.#addExpenseForm
-                    .querySelector(SELECTORS.paidByOption(name))
-                    ?.remove();
-            });
+            const chokdi = item.querySelector('img') as HTMLImageElement;
+            if (
+                participantContainer.childElementCount <= 2 ||
+                this.#editExpense?.paidBy.name === name
+            ) {
+                chokdi.style.display = 'none';
+            } else {
+                chokdi.style.display = 'block';
+                chokdi?.addEventListener('click', () => {
+                    item.remove();
+                    this.#addExpenseForm
+                        .querySelector(SELECTORS.paidByOption(name))
+                        ?.remove();
+
+                    if (participantContainer.childElementCount <= 2) {
+                        Array.from(
+                            participantContainer?.children ?? []
+                        ).forEach((item) => {
+                            (
+                                item.querySelector('img') as HTMLImageElement
+                            ).style.display = 'none';
+                        });
+                    }
+                });
+            }
         });
 
         participantInput.focus();
@@ -513,6 +543,12 @@ export class ExpenseController {
                 ).value = String(value);
             };
 
+            (
+                this.#addExpenseForm.querySelector(
+                    SELECTORS.paidByInput
+                ) as HTMLSelectElement
+            ).disabled = true;
+
             const expenseId = editButton.dataset.expenseId?.trim();
             const expense = this.#expenses.find((exp) => exp.id === expenseId);
             if (!expense) {
@@ -535,6 +571,7 @@ export class ExpenseController {
             this.#editExpense = expense;
 
             this.setFormMode(true);
+            this.addParticipant();
         });
     }
 
