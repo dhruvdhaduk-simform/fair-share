@@ -1,5 +1,6 @@
 export class FormService {
     static validateTitle(title: string): string {
+        title = title.trim();
         if (!title) return 'Please provide a title.';
         if (!/^[A-Za-z\s]+[A-Za-z0-9\s]*$/.test(title)) {
             return 'Title contains invalid characters. Only letters, numbers, and spaces allowed, starting with a letter.';
@@ -9,6 +10,7 @@ export class FormService {
     }
 
     static validateDescription(description: string): string {
+        description = description.trim();
         if (!description) return 'Please provide a description.';
         if (!/^[A-Za-z\s]+[A-Za-z0-9\s]*$/.test(description)) {
             return 'Description contains invalid characters. Only letters, numbers, and spaces allowed, starting with a letter.';
@@ -19,6 +21,9 @@ export class FormService {
     }
 
     static validateAmount(amount: string | number): string {
+        if (typeof amount === 'string') {
+            amount = amount.trim();
+        }
         const amountNum = Number(amount);
         if (isNaN(amountNum) || amountNum <= 0)
             return 'Please provide a valid price greater than 0.';
@@ -27,6 +32,7 @@ export class FormService {
     }
 
     static validateParticipant(participant: string): string {
+        participant = participant.trim();
         if (!participant) return 'Please provide a participant name';
         if (participant.length > 20)
             return 'Participant name must not exceed 20 characters.';
