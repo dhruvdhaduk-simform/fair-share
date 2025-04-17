@@ -545,29 +545,39 @@ export class ExpenseController {
         };
 
         formInputList.forEach((inputItem) => {
-            if (inputItem.errorType == 'participant') {
-                handleInput(
-                    inputItem.inputSelector,
-                    inputItem.validator,
-                    inputItem.errorType,
-                    () => {
-                        const participantContainer =
-                            this.#addExpenseForm.querySelector(
-                                SELECTORS.participants
-                            ) as HTMLElement;
+            handleInput(
+                inputItem.inputSelector,
+                inputItem.validator,
+                inputItem.errorType
+            );
+        });
 
-                        if (participantContainer.childElementCount > 7) {
-                            return 'You can add only 8 participants.';
-                        }
-                        return '';
-                    }
-                );
+        const participantInput = this.#addExpenseForm.querySelector(
+            SELECTORS.participantInput
+        ) as HTMLInputElement;
+
+        const participantAddButton = this.#addExpenseForm.querySelector(
+            SELECTORS.addParticipantButton
+        ) as HTMLButtonElement;
+
+        participantInput.addEventListener('input', (e) => {
+            const value =
+                e.target instanceof HTMLInputElement ? e.target.value : '';
+            let errorMessage: string = FormService.validateParticipant(value);
+            const participantContainer = this.#addExpenseForm.querySelector(
+                SELECTORS.participants
+            ) as HTMLElement;
+
+            if (participantContainer.childElementCount > 7) {
+                errorMessage = 'You can add only 8 participants.';
+            }
+
+            if (errorMessage) {
+                FormService.showError('participant', errorMessage);
+                participantAddButton.disabled = true;
             } else {
-                handleInput(
-                    inputItem.inputSelector,
-                    inputItem.validator,
-                    inputItem.errorType
-                );
+                FormService.clearError('participant');
+                participantAddButton.disabled = false;
             }
         });
     }

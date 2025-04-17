@@ -135,6 +135,16 @@ select {
     font-size: 0.95rem;
 }
 
+#add-participant:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+#add-participant:disabled:hover {
+    background-color: var(--primary-color);
+    cursor: default;
+}
+
 body:not(:has(#form-container:popover-open)) main {
     transition-duration: 300ms;
 }
