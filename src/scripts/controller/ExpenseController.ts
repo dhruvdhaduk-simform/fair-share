@@ -236,9 +236,6 @@ export class ExpenseController {
 
     deleteExpense(expenseId: string) {
         expenseId = expenseId.trim();
-
-        console.log(expenseId);
-
         this.#expenses = this.#expenses.filter((exp) => exp.id !== expenseId);
         StorageService.saveExpenses(this.#expenses);
 
@@ -522,7 +519,6 @@ export class ExpenseController {
             button.addEventListener('click', () => {
                 const expenseId = button.dataset.expenseId;
                 if (typeof expenseId === 'string') {
-                    console.log('first');
                     this.deleteExpense(expenseId);
                 }
             });
