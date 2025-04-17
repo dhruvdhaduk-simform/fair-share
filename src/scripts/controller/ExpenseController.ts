@@ -75,6 +75,23 @@ export class ExpenseController {
             });
         }
 
+        const addExpenseButton = this.#addExpenseForm.querySelector(
+            '.add-expense-btn'
+        ) as HTMLButtonElement;
+
+        const observer = new MutationObserver(() => {
+            if (FormService.isAnyError()) {
+                addExpenseButton.disabled = true;
+            } else {
+                addExpenseButton.disabled = false;
+            }
+        });
+
+        observer.observe(this.#addExpenseForm, {
+            subtree: true,
+            childList: true,
+        });
+
         // Attach Event handlers.
         this.attachThemeChangeHandler();
         this.handleAddParticipant();

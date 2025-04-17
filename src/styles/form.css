@@ -140,7 +140,17 @@ select {
     cursor: default;
 }
 
+.add-expense-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
 #add-participant:disabled:hover {
+    background-color: var(--primary-color);
+    cursor: default;
+}
+
+.add-expense-btn:disabled:hover {
     background-color: var(--primary-color);
     cursor: default;
 }
