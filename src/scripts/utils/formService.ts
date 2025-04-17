@@ -59,10 +59,38 @@ export class FormService {
         }
     }
 
-    static clearAllError() {
+    static clearAllError(): void {
         this.clearError('title');
         this.clearError('description');
         this.clearError('amount');
         this.clearError('participant');
+    }
+
+    static isAnyError(): boolean {
+        const titleErrorElement = document.getElementById(
+            'titleError'
+        ) as HTMLElement;
+        const descriptionErrorElement = document.getElementById(
+            'descriptionError'
+        ) as HTMLElement;
+        const amountErrorElement = document.getElementById(
+            'amountError'
+        ) as HTMLElement;
+        const participantErrorElement = document.getElementById(
+            'participantError'
+        ) as HTMLElement;
+
+        for (const errorElement of [
+            titleErrorElement,
+            descriptionErrorElement,
+            amountErrorElement,
+            participantErrorElement,
+        ]) {
+            if (errorElement.textContent?.trim() !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
