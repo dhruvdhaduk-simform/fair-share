@@ -49,6 +49,26 @@ export class ExpenseController {
             this.attachSettlePaymentHandlers.bind(this)
         );
 
+        const formPopup = this.#addExpenseForm.closest('div[popover]');
+        if (formPopup instanceof HTMLDivElement) {
+            const getValue = (selector: string) =>
+                (
+                    this.#addExpenseForm.querySelector(
+                        selector
+                    ) as HTMLInputElement
+                )?.value.trim();
+            formPopup.addEventListener('toggle', () => {
+                console.dir(formPopup);
+                const title = getValue(SELECTORS.titleInput);
+                const description = getValue(SELECTORS.descriptionInput);
+                const amount = Number(getValue(SELECTORS.amountInput));
+                const participant = getValue(SELECTORS.participantInput);
+
+                if (!title && !description && !amount && !participant)
+                    FormService.clearAllError();
+            });
+        }
+
         // Attach Event handlers.
         this.attachThemeChangeHandler();
         this.handleAddParticipant();
