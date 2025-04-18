@@ -654,7 +654,14 @@ export class ExpenseController {
             ) as HTMLElement;
 
             if (value == '') {
-                FormService.clearError('participant');
+                if (participantContainer.childElementCount < 2) {
+                    FormService.showError(
+                        'participant',
+                        'add minimum tow participant'
+                    );
+                } else {
+                    FormService.clearError('participant');
+                }
                 participantAddButton.disabled = true;
                 return;
             }
