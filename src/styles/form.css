@@ -164,7 +164,10 @@ body:has(#form-container:popover-open) main {
     transition-duration: 300ms;
 }
 
-body:has(#form-container:popover-open) main *:not([popover]):not([popover] *) {
+body:has(#form-container:popover-open) main *:not([popover]):not([popover] *),
+body:has(#form-container:popover-open)
+    header
+    *:not([popover]):not([popover] *) {
     pointer-events: none;
 }
 
