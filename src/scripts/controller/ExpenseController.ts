@@ -34,13 +34,11 @@ export class ExpenseController {
         ) as HTMLButtonElement;
 
         addButton.addEventListener('click', () => {
-            if (this.#editExpense) {
-                this.#editExpense = null;
-                this.#addExpenseForm.reset();
-                this.clearParticipants();
-                this.setFormMode(false);
-                FormService.clearAllError();
-            }
+            this.#editExpense = null;
+            this.#addExpenseForm.reset();
+            this.clearParticipants();
+            this.setFormMode(false);
+            FormService.clearAllError();
 
             (
                 this.#addExpenseForm.querySelector(
