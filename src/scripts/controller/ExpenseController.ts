@@ -435,21 +435,26 @@ export class ExpenseController {
             // For each participant in participants list.
 
             const name = item.textContent?.trim() ?? '';
-            const chokdi = item.querySelector('img') as HTMLImageElement;
+            const removeParticipantIcon = item.querySelector(
+                'img'
+            ) as HTMLImageElement;
             if (
-                participantContainer.childElementCount <= 2 ||
+                participantContainer.childElementCount <= 2 &&
                 this.#editExpense?.paidBy.name === name
             ) {
-                chokdi.style.display = 'none';
+                removeParticipantIcon.style.display = 'none';
             } else {
-                chokdi.style.display = 'block';
-                chokdi?.addEventListener('click', () => {
+                removeParticipantIcon.style.display = 'block';
+                removeParticipantIcon?.addEventListener('click', () => {
                     item.remove();
                     this.#addExpenseForm
                         .querySelector(SELECTORS.paidByOption(name))
                         ?.remove();
 
-                    if (participantContainer.childElementCount <= 2) {
+                    if (
+                        participantContainer.childElementCount <= 2 &&
+                        !(this.#editExpense === null)
+                    ) {
                         Array.from(
                             participantContainer?.children ?? []
                         ).forEach((item) => {
