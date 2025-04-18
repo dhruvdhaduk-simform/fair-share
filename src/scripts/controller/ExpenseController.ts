@@ -439,8 +439,9 @@ export class ExpenseController {
                 'img'
             ) as HTMLImageElement;
             if (
-                participantContainer.childElementCount <= 2 &&
-                this.#editExpense?.paidBy.name === name
+                this.#editExpense &&
+                (participantContainer.childElementCount <= 2 ||
+                    this.#editExpense?.paidBy.name === name)
             ) {
                 removeParticipantIcon.style.display = 'none';
             } else {
