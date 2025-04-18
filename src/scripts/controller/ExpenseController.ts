@@ -450,6 +450,12 @@ export class ExpenseController {
                     this.#addExpenseForm
                         .querySelector(SELECTORS.paidByOption(name))
                         ?.remove();
+                    if (participantContainer.childElementCount < 2) {
+                        FormService.showError(
+                            'participant',
+                            'add minimum two participants'
+                        );
+                    }
 
                     if (
                         participantContainer.childElementCount <= 2 &&
@@ -645,6 +651,12 @@ export class ExpenseController {
             const participantContainer = this.#addExpenseForm.querySelector(
                 SELECTORS.participants
             ) as HTMLElement;
+
+            if (value == '') {
+                FormService.clearError('participant');
+                participantAddButton.disabled = true;
+                return;
+            }
 
             if (participantContainer.childElementCount > 7) {
                 errorMessage = 'You can add only 8 participants.';

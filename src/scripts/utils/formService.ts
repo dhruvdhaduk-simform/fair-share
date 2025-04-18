@@ -36,8 +36,8 @@ export class FormService {
         if (!participant) return 'Please provide a participant name';
         if (participant.length > 20)
             return 'Participant name must not exceed 20 characters.';
-        if (!/^[a-zA-Z]+$/.test(participant))
-            return 'Participant name must only contain letters (a-z, A-Z).';
+        if (!/^[a-zA-Z][a-zA-Z ]*$/.test(participant))
+            return 'Participant name must only contain letters (a-z, A-Z) and spaces between words, but not at the start.';
         return '';
     }
 
