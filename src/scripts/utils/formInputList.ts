@@ -17,9 +17,4 @@ export const formInputList = [
         validator: FormService.validateAmount.bind(FormService),
         errorType: 'amount',
     },
-    {
-        inputSelector: SELECTORS.participantInput,
-        validator: FormService.validateParticipant.bind(FormService),
-        errorType: 'participant',
-    },
 ];

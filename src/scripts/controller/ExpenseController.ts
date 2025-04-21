@@ -34,12 +34,17 @@ export class ExpenseController {
         ) as HTMLButtonElement;
 
         addButton.addEventListener('click', () => {
-            if (this.#editExpense) {
-                this.#editExpense = null;
-                this.#addExpenseForm.reset();
-                this.clearParticipants();
-                this.setFormMode(false);
-            }
+            this.#editExpense = null;
+            this.#addExpenseForm.reset();
+            this.clearParticipants();
+            this.setFormMode(false);
+            FormService.clearAllError();
+
+            (
+                this.#addExpenseForm.querySelector(
+                    SELECTORS.paidByInput
+                ) as HTMLSelectElement
+            ).disabled = false;
         });
 
         // Render expenses fetched from localStorage.
@@ -47,6 +52,42 @@ export class ExpenseController {
             this.#expenses,
             this.attachSettlePaymentHandlers.bind(this)
         );
+
+        const formPopup = this.#addExpenseForm.closest('div[popover]');
+        if (formPopup instanceof HTMLDivElement) {
+            const getValue = (selector: string) =>
+                (
+                    this.#addExpenseForm.querySelector(
+                        selector
+                    ) as HTMLInputElement
+                )?.value.trim();
+            formPopup.addEventListener('toggle', () => {
+                const title = getValue(SELECTORS.titleInput);
+                const description = getValue(SELECTORS.descriptionInput);
+                const amount = Number(getValue(SELECTORS.amountInput));
+                const participant = getValue(SELECTORS.participantInput);
+
+                if (!title && !description && !amount && !participant)
+                    FormService.clearAllError();
+            });
+        }
+
+        const addExpenseButton = this.#addExpenseForm.querySelector(
+            '.add-expense-btn'
+        ) as HTMLButtonElement;
+
+        const observer = new MutationObserver(() => {
+            if (FormService.isAnyError()) {
+                addExpenseButton.disabled = true;
+            } else {
+                addExpenseButton.disabled = false;
+            }
+        });
+
+        observer.observe(this.#addExpenseForm, {
+            subtree: true,
+            childList: true,
+        });
 
         // Attach Event handlers.
         this.attachThemeChangeHandler();
@@ -192,9 +233,6 @@ export class ExpenseController {
 
     deleteExpense(expenseId: string) {
         expenseId = expenseId.trim();
-
-        console.log(expenseId);
-
         this.#expenses = this.#expenses.filter((exp) => exp.id !== expenseId);
         StorageService.saveExpenses(this.#expenses);
 
@@ -360,7 +398,7 @@ export class ExpenseController {
         });
     }
 
-    addParticipant(participantName: string) {
+    addParticipant(participantName?: string) {
         const participantInput = this.#addExpenseForm.querySelector(
             SELECTORS.participantInput
         ) as HTMLInputElement;
@@ -373,31 +411,67 @@ export class ExpenseController {
             return;
         }
 
-        const participantError =
-            FormService.validateParticipant(participantName);
+        if (participantName !== undefined) {
+            const participantError =
+                FormService.validateParticipant(participantName);
 
-        if (participantError) return;
+            if (participantError) return;
 
-        FormService.clearError('participant');
+            FormService.clearError('participant');
 
-        this.#view.renderParticipant(participantName);
+            this.#view.renderParticipant(participantName);
 
-        participantInput.value = '';
+            participantInput.value = '';
 
-        // Attach event handlers to Remove button for each participant.
-        Array.from(
-            this.#addExpenseForm.querySelector(SELECTORS.participants)
-                ?.children ?? []
-        ).forEach((item) => {
+            if (participantContainer.childElementCount < 2) {
+                FormService.showError(
+                    'participant',
+                    'add minimum two participants'
+                );
+            }
+        }
+
+        Array.from(participantContainer?.children ?? []).forEach((item) => {
             // For each participant in participants list.
 
             const name = item.textContent?.trim() ?? '';
-            item.querySelector('img')?.addEventListener('click', () => {
-                item.remove();
-                this.#addExpenseForm
-                    .querySelector(SELECTORS.paidByOption(name))
-                    ?.remove();
-            });
+            const removeParticipantIcon = item.querySelector(
+                'img'
+            ) as HTMLImageElement;
+            if (
+                this.#editExpense &&
+                (participantContainer.childElementCount <= 2 ||
+                    this.#editExpense?.paidBy.name === name)
+            ) {
+                removeParticipantIcon.style.display = 'none';
+            } else {
+                removeParticipantIcon.style.display = 'block';
+                removeParticipantIcon?.addEventListener('click', () => {
+                    item.remove();
+                    this.#addExpenseForm
+                        .querySelector(SELECTORS.paidByOption(name))
+                        ?.remove();
+                    if (participantContainer.childElementCount < 2) {
+                        FormService.showError(
+                            'participant',
+                            'add minimum two participants'
+                        );
+                    }
+
+                    if (
+                        participantContainer.childElementCount <= 2 &&
+                        !(this.#editExpense === null)
+                    ) {
+                        Array.from(
+                            participantContainer?.children ?? []
+                        ).forEach((item) => {
+                            (
+                                item.querySelector('img') as HTMLImageElement
+                            ).style.display = 'none';
+                        });
+                    }
+                });
+            }
         });
 
         participantInput.focus();
@@ -413,13 +487,19 @@ export class ExpenseController {
             SELECTORS.participantInput
         ) as HTMLInputElement;
 
+        const addParticipantButton = this.#addExpenseForm.querySelector(
+            SELECTORS.addParticipantButton
+        ) as HTMLButtonElement;
+
         addParticipantBtn.addEventListener('click', () => {
             this.addParticipant(participantInput.value);
+            addParticipantButton.disabled = true;
         });
         participantInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this.addParticipant(participantInput.value);
+                addParticipantBtn.disabled = true;
             }
         });
     }
@@ -448,7 +528,6 @@ export class ExpenseController {
             button.addEventListener('click', () => {
                 const expenseId = button.dataset.expenseId;
                 if (typeof expenseId === 'string') {
-                    console.log('first');
                     this.deleteExpense(expenseId);
                 }
             });
@@ -486,6 +565,12 @@ export class ExpenseController {
                 ).value = String(value);
             };
 
+            (
+                this.#addExpenseForm.querySelector(
+                    SELECTORS.paidByInput
+                ) as HTMLSelectElement
+            ).disabled = true;
+
             const expenseId = editButton.dataset.expenseId?.trim();
             const expense = this.#expenses.find((exp) => exp.id === expenseId);
             if (!expense) {
@@ -508,6 +593,7 @@ export class ExpenseController {
             this.#editExpense = expense;
 
             this.setFormMode(true);
+            this.addParticipant();
         });
     }
 
@@ -544,29 +630,52 @@ export class ExpenseController {
         };
 
         formInputList.forEach((inputItem) => {
-            if (inputItem.errorType == 'participant') {
-                handleInput(
-                    inputItem.inputSelector,
-                    inputItem.validator,
-                    inputItem.errorType,
-                    () => {
-                        const participantContainer =
-                            this.#addExpenseForm.querySelector(
-                                SELECTORS.participants
-                            ) as HTMLElement;
+            handleInput(
+                inputItem.inputSelector,
+                inputItem.validator,
+                inputItem.errorType
+            );
+        });
 
-                        if (participantContainer.childElementCount > 7) {
-                            return 'You can add only 8 participants.';
-                        }
-                        return '';
-                    }
-                );
+        const participantInput = this.#addExpenseForm.querySelector(
+            SELECTORS.participantInput
+        ) as HTMLInputElement;
+
+        const participantAddButton = this.#addExpenseForm.querySelector(
+            SELECTORS.addParticipantButton
+        ) as HTMLButtonElement;
+
+        participantInput.addEventListener('input', (e) => {
+            const value =
+                e.target instanceof HTMLInputElement ? e.target.value : '';
+            let errorMessage: string = FormService.validateParticipant(value);
+            const participantContainer = this.#addExpenseForm.querySelector(
+                SELECTORS.participants
+            ) as HTMLElement;
+
+            if (value == '') {
+                if (participantContainer.childElementCount < 2) {
+                    FormService.showError(
+                        'participant',
+                        'add minimum tow participant'
+                    );
+                } else {
+                    FormService.clearError('participant');
+                }
+                participantAddButton.disabled = true;
+                return;
+            }
+
+            if (participantContainer.childElementCount > 7) {
+                errorMessage = 'You can add only 8 participants.';
+            }
+
+            if (errorMessage) {
+                FormService.showError('participant', errorMessage);
+                participantAddButton.disabled = true;
             } else {
-                handleInput(
-                    inputItem.inputSelector,
-                    inputItem.validator,
-                    inputItem.errorType
-                );
+                FormService.clearError('participant');
+                participantAddButton.disabled = false;
             }
         });
     }

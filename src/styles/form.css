@@ -135,6 +135,26 @@ select {
     font-size: 0.95rem;
 }
 
+#add-participant:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.add-expense-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+#add-participant:disabled:hover {
+    background-color: var(--primary-color);
+    cursor: default;
+}
+
+.add-expense-btn:disabled:hover {
+    background-color: var(--primary-color);
+    cursor: default;
+}
+
 body:not(:has(#form-container:popover-open)) main {
     transition-duration: 300ms;
 }
@@ -144,6 +164,35 @@ body:has(#form-container:popover-open) main {
     transition-duration: 300ms;
 }
 
-body:has(#form-container:popover-open) main *:not([popover]):not([popover] *) {
+body:has(#form-container:popover-open) main *:not([popover]):not([popover] *),
+body:has(#form-container:popover-open)
+    header
+    *:not([popover]):not([popover] *) {
     pointer-events: none;
+}
+
+.form-heading-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.close-form-button {
+    background-color: var(--danger-color);
+    border: none;
+    padding: 0.3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-form-icon {
+    height: 0.8rem;
+    filter: invert(100%);
+}
+
+.close-form-button:hover {
+    opacity: 0.7;
+    cursor: pointer;
 }
